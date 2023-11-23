@@ -1,9 +1,11 @@
 import { PDF } from "@/app/app/pdf"
+
 import {GetObjectCommand, HeadObjectCommand} from "@aws-sdk/client-s3";
-import { S3 } from "@/app/api/file/route"
+import { S3 } from "@/app/api/s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
+
 
 const Bucket = process.env.R2_BUCKET || "";
 

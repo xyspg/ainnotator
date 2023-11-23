@@ -1,0 +1,233 @@
+"use client"
+import React, { useState,useEffect, useCallback } from "react";
+
+import {
+    PdfLoader,
+    PdfHighlighter,
+    Tip,
+    Highlight,
+    Popup,
+    AreaHighlight,
+} from "@/lib/react-pdf-highlighter";
+
+import type { IHighlight, NewHighlight } from "@/../react-pdf-highlighter";
+
+import { testHighlights as _testHighlights } from "./test-highlights";
+import { Sidebar } from "../../components/Sidebar";
+import {useCompletion} from "ai/react";
+import {Position} from "@/lib/react-pdf-highlighter";
+
+
+const testHighlights: Record<string, Array<IHighlight>> = _testHighlights;
+
+const Spinner = () => <div>Loading</div>
+
+interface State {
+    url: string;
+    highlights: Array<IHighlight>;
+}
+
+const getNextId = () => String(Math.random()).slice(2);
+
+const parseIdFromHash = () =>
+    document.location.hash.slice("#highlight-".length);
+
+const resetHash = () => {
+    document.location.hash = "";
+};
+
+const HighlightPopup = ({
+                            comment,
+                        }: {
+    comment: { text: string; emoji: string };
+}) =>
+    comment.text ? (
+        <div className="Highlight__popup">
+            {comment.emoji} {comment.text}
+        </div>
+    ) : null;
+
+const PRIMARY_PDF_URL = "https://arxiv.org/pdf/1708.08021.pdf";
+const SECONDARY_PDF_URL = "https://arxiv.org/pdf/1604.02480.pdf";
+
+const searchParams = new URLSearchParams(document.location.search);
+
+
+
+const App = ({ pdf }: { pdf: string }) => {
+    const initialUrl = pdf || PRIMARY_PDF_URL
+    const [url, setUrl] = useState(initialUrl);
+    const [highlights, setHighlights] = useState(testHighlights[initialUrl] ? [...testHighlights[initialUrl]] : []);
+    const { completion, isLoading, complete } = useCompletion();
+    const [textSelection, setTextSelection] = useState<any>("");
+    const [position, setPosition] = useState<Position>();
+    const resetHighlights = () => {
+        setHighlights([]);
+    };
+    console.log("highlights", highlights)
+    console.log("position",position)
+
+    const toggleDocument = () => {
+        const newUrl = url === PRIMARY_PDF_URL ? SECONDARY_PDF_URL : PRIMARY_PDF_URL;
+        setUrl(newUrl);
+        setHighlights(testHighlights[newUrl] ? [...testHighlights[newUrl]] : []);
+    };
+
+    let scrollViewerTo = (highlight) => {
+        // Your scrolling logic here
+    };
+
+    const scrollToHighlightFromHash = () => {
+        const highlight = getHighlightById(parseIdFromHash());
+        if (highlight) {
+            scrollViewerTo(highlight);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("hashchange", scrollToHighlightFromHash, false);
+        return () => {
+            window.removeEventListener("hashchange", scrollToHighlightFromHash, false);
+        };
+    }, []);
+
+    const getHighlightById = useCallback((id) => {
+        return highlights.find((highlight) => highlight.id === id);
+    }, [highlights]);
+
+    const addHighlight = () => {
+        const highlight = {
+            content: textSelection,
+            position,
+            comment: { text: completion }
+        }
+        console.log("Saving highlight", highlight);
+        setHighlights([{ ...highlight, id: getNextId() }, ...highlights]);
+    };
+
+    const updateHighlight = (highlightId, position, content) => {
+        console.log("Updating highlight", highlightId, position, content);
+        setHighlights(highlights.map((h) => {
+            if (h.id === highlightId) {
+                return {
+                    ...h,
+                    position: { ...h.position, ...position },
+                    content: { ...h.content, ...content },
+                };
+            }
+            return h;
+        }));
+    };
+
+    const handleSelectionFinished = (
+        position,
+        context,
+        content,
+        hideTipAndSelection,
+        transformSelection
+    ) => {
+        setTextSelection(content)
+        setPosition(position)
+        complete(content?.text as string, {
+            body: {
+                data: JSON.stringify({
+                    context,
+                }),
+            },
+        });
+        return (
+        <Tip
+            onOpen={transformSelection}
+            onConfirm={(comment) => {
+                addHighlight({content, position, comment});
+                hideTipAndSelection();
+            }}
+        />
+        )
+    }
+
+    const handleHighlightTransform = (
+        highlight,
+        index,
+        setTip,
+        hideTip,
+        viewportToScaled,
+        screenshot,
+        isScrolledTo
+    ) => {
+        const isTextHighlight = !Boolean(
+            highlight.content && highlight.content.image
+        );
+
+        const component = isTextHighlight ? (
+            <Highlight
+                isScrolledTo={isScrolledTo}
+                position={highlight.position}
+                comment={highlight.comment}
+            />
+        ) : (
+            <AreaHighlight
+                isScrolledTo={isScrolledTo}
+                highlight={highlight}
+                onChange={(boundingRect) => {
+                    updateHighlight(
+                        highlight.id,
+                        { boundingRect: viewportToScaled(boundingRect) },
+                        { image: screenshot(boundingRect) }
+                    );
+                }}
+            />
+        );
+
+        return (
+            <Popup
+                popupContent={<HighlightPopup {...highlight} />}
+                onMouseOver={(popupContent) =>
+                    setTip(highlight, (highlight) => popupContent)
+                }
+                onMouseOut={hideTip}
+                key={index}
+                children={component}
+            />
+        );
+    }
+
+    return (
+        <div className="App" style={{ display: "flex", height: "100vh" }}>
+            <Sidebar
+                highlights={highlights}
+                resetHighlights={resetHighlights}
+                toggleDocument={toggleDocument}
+                completion={completion}
+                loading={isLoading}
+                onAddAnnotation={addHighlight}
+            />
+            <div
+                style={{
+                    height: "100vh",
+                    width: "75vw",
+                    position: "relative",
+                }}
+            >
+                <PdfLoader url={url} beforeLoad={<Spinner />}>
+                    {(pdfDocument) => (
+                        <PdfHighlighter
+                            pdfDocument={pdfDocument}
+                            enableAreaSelection={(event) => event.altKey}
+                            onScrollChange={resetHash}
+                            scrollRef={(scrollTo) => {
+                                scrollViewerTo = scrollTo;
+                                scrollToHighlightFromHash();
+                            }}
+                            onSelectionFinished={handleSelectionFinished}
+                            highlightTransform={handleHighlightTransform}
+                            highlights={highlights}
+                        />
+                    )}
+                </PdfLoader>
+            </div>
+        </div>
+    );
+};
+
+export default App;

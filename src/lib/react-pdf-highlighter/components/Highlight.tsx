@@ -43,7 +43,7 @@ export class Highlight extends Component<Props> {
               top: boundingRect.top,
             }}
           >
-            {comment.emoji}
+            {/*{comment.emoji}*/}
           </div>
         ) : null}
         <div className="Highlight__parts">
