@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FileWithPath } from "@mantine/dropzone";
-import { Group, Text, rem } from "@mantine/core";
-import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
-import { Dropzone, DropzoneProps, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
+import { Group, rem, Text } from "@mantine/core";
+import { IconFile, IconUpload, IconX } from "@tabler/icons-react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Uploader() {
   const [fileUUID, setFileUUID] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const router = useRouter();
   const handleUpload = async (file: FileWithPath[]) => {
+    if (file[0].size >= 32 * 1024 * 1024) {
+      toast.error("File is too large. Max size is 32MB.");
+      return;
+    }
+    setLoading(true);
     const body = new FormData();
     body.append("file", file[0], file[0].name);
 
@@ -17,34 +24,33 @@ export default function Uploader() {
         method: "POST",
         body,
       });
-
-      if (!response.ok) {
-        throw new Error("Upload failed");
+      if (response.status === 413) {
+        throw new Error("File is too large. Max size is 32MB.");
       }
 
       const { uuid } = await response.json();
       setFileUUID(uuid);
-    } catch (error) {
-      console.error("Error uploading files", error);
+    } catch (error: any) {
+      setLoading(false);
+      toast.error(error.message);
     }
   };
 
   useEffect(() => {
     if (fileUUID) {
-      // sleep for 2 seconds
-        setTimeout(() => {
-            router.push(`/pdf/${fileUUID}`);
-        }, 2000);
+      router.push(`/pdf/${fileUUID}`);
     }
   }, [fileUUID]);
 
   return (
     <>
+      <Toaster />
       <Dropzone
         onDrop={(file) => {
           handleUpload(file);
         }}
-        maxSize={3 * 1024 ** 2}
+        accept={[MIME_TYPES.pdf]}
+        loading={loading}
       >
         <Group
           justify="center"
@@ -73,7 +79,7 @@ export default function Uploader() {
             />
           </Dropzone.Reject>
           <Dropzone.Idle>
-            <IconPhoto
+            <IconFile
               style={{
                 width: rem(52),
                 height: rem(52),
@@ -85,10 +91,7 @@ export default function Uploader() {
 
           <div>
             <Text size="xl" inline>
-              Drag images here or click to select files
-            </Text>
-            <Text size="sm" c="dimmed" inline mt={7}>
-              Attach as many files as you like, each file should not exceed 5mb
+              Drag PDF here or click to select files
             </Text>
           </div>
         </Group>

@@ -18,7 +18,11 @@ export async function POST(req: Request) {
   const { prompt, data } = await req.json();
   const context = JSON.parse(data).context;
 
-  const content = `You are a PDF annotator. Annotate the given sentence in the context with brief comments. OMIT prefixes like "this sentence/proposal/statement says..." , directly go to the comment content.\n
+  const content = `You are Ainnotator, a PDF annotator powered by AI. Annotate the given sentence in the context with brief comments. 
+  OMIT prefixes like "this sentence/proposal/statement says..." , directly go to the comment content.
+  DO NOT keep referencing the title of the document or the overall context (eg. this sentence is a part of an analysis on the movie xxxx).
+  People work in this annotator continuously so just focus on the given comments. 
+  \n
           Example:
           Sentence: "While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model."\n
           Context Section: ${oneline`Commerce on the Internet has come to rely almost exclusively on financial institutions serving as
@@ -39,7 +43,6 @@ export async function POST(req: Request) {
           Sentence: ${prompt}
             Context Section: ${context}
           Comments:`;
-  console.log(content);
 
   // Ask OpenAI for a streaming completion given the prompt
   const response = await openai.chat.completions.create({

@@ -13,7 +13,6 @@ interface Props {
   onMouseOver?: () => void;
   onMouseOut?: () => void;
   comment: {
-    emoji: string;
     text: string;
   };
   isScrolledTo: boolean;

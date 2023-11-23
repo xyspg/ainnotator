@@ -1,5 +1,13 @@
 "use client";
-import type { IHighlight, NewHighlight } from "./react-pdf-highlighter";
+import type {
+  LTWH,
+  IHighlight,
+  NewHighlight,
+  HighlightComment,
+  ScaledPosition,
+  Content,
+  Position,
+} from "@/lib/react-pdf-highlighter/types";
 import {
   AreaHighlight,
   Highlight,
@@ -8,13 +16,16 @@ import {
   Popup,
   Tip,
 } from "./react-pdf-highlighter";
+
+import { Button } from "@nextui-org/react";
+
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/app/components/Sidebar";
 
 import { useCompletion } from "ai/react";
-import { Card, CardBody, Skeleton } from "@nextui-org/react";
+import { useAtom } from "jotai";
+import { completionAtom } from "@/app/atoms";
 
-// const PRIMARY_PDF_URL = "https://arxiv.org/pdf/1708.08021.pdf";
 const PRIMARY_PDF_URL = "https://r2.xyspg.moe/pdf/the-birds";
 const SECONDARY_PDF_URL = "https://arxiv.org/pdf/1604.02480.pdf";
 
@@ -29,11 +40,18 @@ const HighlightPopup = ({
     </div>
   ) : null;
 
-export const PDF = ({pdf} : {pdf: string}) => {
-  const [url, setUrl] = useState(
-    pdf || PRIMARY_PDF_URL,
-  );
+export const PDF = ({ pdf }: { pdf: string }) => {
+  const [url, setUrl] = useState(pdf || PRIMARY_PDF_URL);
   const [highlights, setHighlights] = useState<Array<IHighlight>>([]);
+  const { completion, isLoading, complete } = useCompletion();
+  const [textSelection, setTextSelection] = useState<any>("");
+  const [position, setPosition] = useState<Position>();
+  console.log("highlights", highlights);
+    console.log("completion--->", completion);
+    console.log("textSelection--->", textSelection);
+    console.log("pos--->", position);
+
+
 
   const resetHighlights = () => {
     setHighlights([]);
@@ -46,17 +64,15 @@ export const PDF = ({pdf} : {pdf: string}) => {
     setHighlights([]);
   };
 
-  const scrollViewerTo = (highlight: any) => {
-    // implementation of scrollViewerTo
-  };
+  const scrollViewerTo = (highlight: any) => {};
 
   const scrollToHighlightFromHash = () => {
     const highlight = getHighlightById(parseIdFromHash());
     if (highlight) {
+      console.log("highlight to scorll", highlight);
       scrollViewerTo(highlight);
     }
   };
-
 
   useEffect(() => {
     window.addEventListener("hashchange", scrollToHighlightFromHash, false);
@@ -76,7 +92,12 @@ export const PDF = ({pdf} : {pdf: string}) => {
     [highlights],
   );
 
-  const addHighlight = (highlight: NewHighlight) => {
+  const addHighlight = (highlight: {
+    comment: Comment;
+    position: Position;
+    content: Content;
+  }) => {
+    //@ts-ignore
     setHighlights([{ ...highlight, id: getNextId() }, ...highlights]);
   };
 
@@ -98,11 +119,80 @@ export const PDF = ({pdf} : {pdf: string}) => {
       }),
     );
   };
-  const [completionResult, setCompletionResult] = useState<string>("");
-  const { completion, isLoading, complete } = useCompletion();
-  useEffect(() => {
-    setCompletionResult(completion);
-  }, [completion]);
+
+
+  function handleAddHighlight() {
+    const highlight = {
+      content: textSelection,
+      position,
+      comment: { text: completion },
+    };
+    //@ts-ignore
+    addHighlight(highlight);
+  }
+
+  const onSelectionFinished = (
+    position: Position,
+    context: string,
+    content: Content,
+  ) => {
+    setTextSelection(content)
+    setPosition(position)
+    complete(content?.text as string, {
+      body: {
+        data: JSON.stringify({
+          context,
+        }),
+      },
+    });
+  };
+
+  const highlightTransform = (
+    highlight: any,
+    index: number,
+    setTip: any,
+    hideTip: () => void,
+    viewportToScaled: any,
+    screenshot: any,
+    isScrolledTo: boolean,
+  ) => {
+    const isTextHighlight = !Boolean(
+      highlight.content && highlight.content.image,
+    );
+
+    const component = isTextHighlight ? (
+      <Highlight
+        isScrolledTo={isScrolledTo}
+        position={highlight.position}
+        comment={highlight.comment}
+      />
+    ) : (
+      <AreaHighlight
+        isScrolledTo={isScrolledTo}
+        highlight={highlight}
+        onChange={(boundingRect) => {
+          updateHighlight(
+            highlight.id,
+            { boundingRect: viewportToScaled(boundingRect) },
+            { image: screenshot(boundingRect) },
+          );
+        }}
+      />
+    );
+
+    return (
+      <Popup
+        popupContent={<HighlightPopup {...highlight} />}
+        onMouseOver={(popupContent) =>
+          setTip(highlight, (highlight: any) => popupContent)
+        }
+        onMouseOut={hideTip}
+        key={index}
+        children={component}
+      />
+    );
+  };
+
   return (
     <>
       <div className="flex h-screen">
@@ -111,7 +201,8 @@ export const PDF = ({pdf} : {pdf: string}) => {
           resetHighlights={resetHighlights}
           toggleDocument={toggleDocument}
           completion={completion}
-
+          loading={isLoading}
+          onAddAnnotation={handleAddHighlight}
         />
         <div
           style={{
@@ -126,91 +217,13 @@ export const PDF = ({pdf} : {pdf: string}) => {
                 pdfDocument={pdfDocument}
                 enableAreaSelection={(event) => event.altKey}
                 onScrollChange={resetHash}
-                // pdfScaleValue="page-width"
-                scrollRef={(scrollTo) => {}}
-                onSelectionFinished={(
-                  position,
-                  context,
-                  content,
-                  hideTipAndSelection,
-                  transformSelection,
-                ) => {
-                  complete(content?.text as string, {
-                    body: {
-                      data: JSON.stringify({
-                        context,
-                      }),
-                    },
-                  });
-                  console.log("sentence-->", content.text);
-                  console.log("completion--->", completion)
-                  function handleAddHighlight() {
-                    const highlight = {
-                      content,
-                      position,
-                      comment: completion,
-                    };
-                    addHighlight(highlight);
-                    hideTipAndSelection();
-                  }
-                  return (
-                    <>
-                      <Tip
-                        onOpen={transformSelection}
-                        //@ts-ignore
-                        onConfirm={(comment) => {
-                          handleAddHighlight();
-                          hideTipAndSelection();
-                        }}
-                      />
-                    </>
-                  );
+                scrollRef={(scrollTo) => {
+                  scrollViewerTo(scrollTo);
+                  scrollToHighlightFromHash();
                 }}
-                highlightTransform={(
-                  highlight,
-                  index,
-                  setTip,
-                  hideTip,
-                  viewportToScaled,
-                  screenshot,
-                  isScrolledTo,
-                ) => {
-                  const isTextHighlight = !Boolean(
-                    highlight.content && highlight.content.image,
-                  );
-
-                  const component = isTextHighlight ? (
-                    <Highlight
-                      isScrolledTo={isScrolledTo}
-                      position={highlight.position}
-                      comment={highlight.comment}
-                    />
-                  ) : (
-                    <AreaHighlight
-                      isScrolledTo={isScrolledTo}
-                      highlight={highlight}
-                      onChange={(boundingRect) => {
-                        updateHighlight(
-                          highlight.id,
-                          { boundingRect: viewportToScaled(boundingRect) },
-                          { image: screenshot(boundingRect) },
-                        );
-                      }}
-                    />
-                  );
-
-                  return (
-                    <Popup
-                      popupContent={<HighlightPopup {...highlight} />}
-                      onMouseOver={(popupContent) =>
-                        setTip(highlight, (highlight) => popupContent)
-                      }
-                      onMouseOut={hideTip}
-                      key={index}
-                      children={component}
-                    />
-                  );
-                }}
+                //@ts-ignore
+                onSelectionFinished={onSelectionFinished}
+                highlightTransform={highlightTransform}
                 highlights={highlights}
               />
             )}

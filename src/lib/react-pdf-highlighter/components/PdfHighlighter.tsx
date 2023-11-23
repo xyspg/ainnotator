@@ -492,14 +492,15 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     let pages;
     let text = "";
     if (pageNum === 1) {
-      pages = [pageNum, pageNum + 1];
+      pages = [pageNum, pageNum + 2];
     } else if (pageNum === pdfDocument.numPages) {
-      pages = [pageNum - 1, pageNum];
+      pages = [pageNum - 2, pageNum];
     } else {
-      pages = [pageNum - 1, pageNum, pageNum + 1];
+      pages = [1, pageNum - 1, pageNum, pageNum + 1];
     }
     for (let i = 0; i < pages.length; i++) {
       const page = await pdfDocument.getPage(pages[i]);
+      text += `\npage: ${pages[i]}\n`
       const pageText = await page.getTextContent();
       //@ts-ignore
       text += pageText.items.map((item) => item.str).join(" ");
