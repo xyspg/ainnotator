@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
+const withNextIntl = require('next-intl/plugin')();
 
-const nextConfig = {
+
+const nextConfig = withNextIntl({
   reactStrictMode: true,
   experimental: {
     esmExternals: "loose", // required to make Konva & react-konva work
@@ -9,6 +11,6 @@ const nextConfig = {
     config.externals = [...config.externals, { canvas: "canvas" }]; // required to make Konva & react-konva work
     return config;
   },
-};
+});
 
 module.exports = nextConfig;

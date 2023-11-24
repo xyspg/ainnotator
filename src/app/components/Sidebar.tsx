@@ -1,5 +1,5 @@
-import React from "react";
-import {Button, CardHeader} from "@nextui-org/react";
+import React, {useEffect, useState} from "react";
+import {Button, CardHeader, Progress} from "@nextui-org/react";
 import type { IHighlight } from "@/lib/react-pdf-highlighter";
 import { Card, CardBody, CardFooter, Divider } from "@nextui-org/react";
 
@@ -10,6 +10,7 @@ interface Props {
   completion: string;
   loading: boolean;
   onAddAnnotation: () => void;
+  onRemove: (highlight: IHighlight) => void;
 }
 
 const updateHash = (highlight: IHighlight) => {
@@ -23,7 +24,22 @@ export function Sidebar({
   completion,
   loading,
   onAddAnnotation,
+    onRemove
 }: Props) {
+
+    const [isCardVisible, setIsCardVisible] = useState(true);
+
+    const handleAddAnnotation = () => {
+        // Toggle the visibility of the card
+        setIsCardVisible(false);
+        // Call the original onAddAnnotation function
+        onAddAnnotation();
+    };
+
+    useEffect(() => {
+        setIsCardVisible(true)
+    }, [completion]);
+
   return (
     <div className="w-[25vw] bg-neutral-100 text-neutral-900 font-sans font-light overflow-auto">
       <div className="p-8">
@@ -36,19 +52,25 @@ export function Sidebar({
       </div>
       <Divider />
       {!completion && loading && (
-        <Card className="m-2">
+        <Card className="m-2 p-1">
             <CardBody>
                 <div className="flex flex-col items-center justify-center">
                 <div className="spinner"></div>
+                    <Progress
+                        isIndeterminate
+                        aria-label="loading"
+                        size="sm"
+                        className="max-w-md my-4"
+                        />
                 <p className="text-sm font-medium text-gray-500">Loading...</p>
                 </div>
             </CardBody>
         </Card>
       )}
-      {!completion && !loading && (
+      {!isCardVisible || (!completion && !loading) &&  (
           <p className="p-8 font-medium text-black">Select texts to get started</p>
       )}
-      {completion && (
+      {completion && isCardVisible && (
         <Card className="mx-2">
           <CardBody>
           {completion}
@@ -56,7 +78,7 @@ export function Sidebar({
           </CardBody>
           <Divider />
           {completion && !loading && (
-              <div className="p-4"><Button color="primary" onClick={onAddAnnotation}>Add Annotation</Button></div>
+              <div className="p-4"><Button color="primary" onClick={handleAddAnnotation}>Add Annotation</Button></div>
           )}
         </Card>
       ) }
@@ -86,8 +108,9 @@ export function Sidebar({
                 </div>
               ) : null}
             <Divider />
-            <CardFooter className="highlight__location">
+            <CardFooter className="flex flex-row justify-between">
               Page {highlight.position.pageNumber}
+                <Button onClick={()=>{onRemove(highlight)}}>Remove</Button>
             </CardFooter>
             </Card>
 

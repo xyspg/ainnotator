@@ -1,32 +1,42 @@
-import { PDF } from "@/app/app/pdf"
+import { PDF } from "@/app/app/pdf";
+import { notFound } from 'next/navigation'
 
-import {GetObjectCommand, HeadObjectCommand} from "@aws-sdk/client-s3";
-import { S3 } from "@/app/api/s3"
+import { GetObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
+import { S3 } from "@/app/api/s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Button } from "@nextui-org/react";
+import { redis } from "@/lib/upstash";
 import Link from "next/link";
-
+import {IHighlight} from "@/lib/react-pdf-highlighter";
 
 const Bucket = process.env.R2_BUCKET || "";
 
 export default async function Page({ params }: { params: { slug: string } }) {
-    const isExist = await S3.send(new HeadObjectCommand({ Bucket, Key: `pdf/${params.slug}` })).then(() => true).catch(() => false);
-    const command = new GetObjectCommand({ Bucket, Key: `pdf/${params.slug}` });
-    const src = await getSignedUrl(S3, command, { expiresIn: 86400 });
+  const isExist = await S3.send(
+    new HeadObjectCommand({
+      Bucket,
+      Key: `pdf/${params.slug}`,
+    }),
+  )
+    .then(() => true)
+    .catch(() => false);
+  const command = new GetObjectCommand({ Bucket, Key: `pdf/${params.slug}` });
+  const src = await getSignedUrl(S3, command, { expiresIn: 86400 });
 
-    if (!isExist) {
-        return (
-            <div className="p-8 mt-24 md:mt-0 md:p-48 flex flex-col gap-8 items-start">
-            <h1 className="font-mono text-5xl font-medium">404 Not Found</h1>
-                <p className="text-2xl font-medium font-sans">The requested PDF does not exist. Uploaded PDF will only be saved for 7 days.</p>
-                <Link href="/" ><Button color="primary">Go Back</Button></Link>
-            </div>
-        )
-    }
+  const annotation = await getAnnotation(params.slug);
+
+  if (!isExist) {
+    notFound()
+  }
 
   return (
-      <>
-      <PDF pdf={src} />
-      </>
-  )
+    <>
+      <PDF pdf={src} annotation={annotation} />
+    </>
+  );
+}
+
+async function getAnnotation( id: string ): Promise<IHighlight[]> {
+    const response =  await redis.get(id);
+    return response as unknown as IHighlight[];
 }

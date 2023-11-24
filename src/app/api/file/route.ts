@@ -7,6 +7,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 import { S3 } from "../s3"
+import {regularRatelimit} from "@/lib/upstash";
 
 const Bucket = process.env.R2_BUCKET || "";
 
@@ -19,7 +20,17 @@ export async function POST(req: Request) {
   if (!file) {
     return new Response("No file", { status: 400 });
   }
-  // 15 mb max
+  const ip = req.headers.get("x-forwarded-for") || '';
+  const { success, remaining } = await regularRatelimit.limit(`fileUpload:${ip}`)
+
+    if (!success) {
+        return new Response(
+        JSON.stringify({
+            message: "You have being too frequent. Please try again later.",
+        }),
+        { status: 429 },
+        );
+    }
 
   const uuid = crypto.randomUUID();
 
