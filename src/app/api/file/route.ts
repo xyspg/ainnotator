@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   const formData = await req.formData();
   const file = formData.get("file") as Blob;
 
-  if (isDev()) {
+  if (!isDev()) {
     return new Response(JSON.stringify({ message: "Under Development"}), { status: 425 });
   }
 
