@@ -16,21 +16,22 @@ import {
   Popup,
   Tip,
 } from "./react-pdf-highlighter";
+import Loading from "@/app/components/Loading";
+import { Sidebar } from "@/app/components/Sidebar";
+import toast, { Toaster } from 'react-hot-toast';
+import {Button, Card, CardBody } from "@nextui-org/react";
+
+import React, { useCallback, useEffect, useState, useRef } from "react";
 
 import { usePathname } from "next/navigation";
-import React, { useCallback, useEffect, useState, useRef } from "react";
-import { Sidebar } from "@/app/components/Sidebar";
-
 import { useCompletion } from "ai/react";
-import Loading from "@/app/components/Loading";
 import { ClientOnly } from "@/lib/clientOnly";
 import axios from "axios";
-import toast, { Toaster } from 'react-hot-toast';
-import {Button} from "@nextui-org/react";
 import { renderPdf } from "@/app/annotate/render";
 
 const PRIMARY_PDF_URL = "https://r2.xyspg.moe/pdf/the-birds";
 const SECONDARY_PDF_URL = "https://arxiv.org/pdf/1604.02480.pdf";
+
 
 const HighlightPopup = ({
   comment,
@@ -38,9 +39,11 @@ const HighlightPopup = ({
   comment: { text: string; emoji: string };
 }) =>
   comment.text ? (
-    <div className="Highlight__popup">
+      <Card>
+        <CardBody className="max-w-md overflow-auto" >
       {comment.emoji} {comment.text}
-    </div>
+        </CardBody>
+      </Card>
   ) : null;
 
 export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[] }) => {

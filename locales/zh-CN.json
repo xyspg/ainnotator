@@ -1,0 +1,32 @@
+{
+  "Hero": {
+    "slogan": "在任意可选择文本的 PDF 上获得 AI 驱动的批注",
+    "upload": "将 PDF 拖入，或点击此处上传"
+  },
+  "PrimaryFeatures": {
+    "title": "选中文本，实时获得 AI 批注",
+    "subtitle": "轻松将文本转化为知识：由 AI 驱动的",
+    "features": [
+      {
+        "title": "实时 AI 批注",
+        "description": "只需在 PDF 上选中文本，即可看到 AI 的见解和批注如魔法般出现。"
+      },
+      {
+        "title": "智能上下文",
+        "description": "PDF 中相关的上下文会自动一同发送给 AI。"
+      },
+      {
+        "title": "导出带有批注的文件",
+        "description": "将 AI 批注导出为标准批注格式的 PDF 文件，支持所有主流 PDF 阅读器。"
+      },
+      {
+        "title": "自动批注",
+        "description": "一键自动批注整个文档并导出为 PDF。无需手动翻阅页面，即可发现关键思想和重要要点。"
+      }
+    ]
+  },
+  "SecondaryFeatures": {
+    "title": "简化每一次批注任务",
+    "subtitle": "因为你或许厌倦了每次需要手动将大量的文本复制到 ChatGPT 中，来获得 AI 的见解和批注"
+  }
+}

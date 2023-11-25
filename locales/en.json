@@ -1,0 +1,49 @@
+{
+  "Hero": {
+    "slogan": "Get AI-Powered Annotations with Any Text-Selectable PDFs.",
+    "upload": "Drag PDF here or click to select files"
+  },
+  "PrimaryFeatures": {
+    "title": "Read, Highlight, and Get AI Annotations in Real-Time",
+    "subtitle": "Effortlessly Transform Text into Knowledge - Powered by AI",
+    "features": [
+      {
+        "title": "Instant AI Insights",
+        "description": "Simply select text within your PDF and watch as AI-driven insights and annotations magically appear."
+      },
+      {
+        "title": "Smart Context Inclusion",
+        "description": "Relevant contexts are automatically included in the AI query."
+      },
+      {
+        "title": "Direct Export with Annotations",
+        "description": "Export your PDFs with AI-generated annotations. Compatible with any PDF viewer."
+      },
+      {
+        "title": "Auto Highlight (Under Development)",
+        "description": "Highlight the entire document in one click. Discover key ideas and important takeaways without manually sifting through pages."
+      }
+    ]
+  },
+  "SecondaryFeatures": {
+    "title": "Simplify Every Reading Task",
+    "subtitle": "No need to manually copy and past so many texts into ChatGPT to get AI responses again.",
+    "features": {
+      "1": {
+        "label": "Academics",
+        "title": "Scholarly Essays",
+        "description": "Dive into complex academic texts with ease. AInnotator helps you understand and contextualize scholarly essays, ensuring you grasp every nuance and reference without missing a beat."
+      },
+      "2": {
+        "label": "Life",
+        "title": "Novel Stories",
+        "description": "Unravel the intricacies of any novel. Instantly clarify plot details, character relationships, and themes, making your reading experience both enjoyable and insightful."
+      },
+      "3": {
+        "label": "Business",
+        "title": "Official Documents",
+        "description": "Navigate the complexities of official documents. Understand the fine print and implications with AInnotator’s clear, concise annotations."
+      }
+    }
+  }
+}

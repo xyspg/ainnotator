@@ -4,12 +4,14 @@ import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
 import { Group, rem, Text } from "@mantine/core";
 import { IconFile, IconUpload, IconX } from "@tabler/icons-react";
 import toast, { Toaster } from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export default function Uploader() {
   const [fileUUID, setFileUUID] = useState("");
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const t = useTranslations('Hero')
   const handleUpload = async (file: FileWithPath[]) => {
     if (file[0].size >= 32 * 1024 * 1024) {
       toast.error("File is too large. Max size is 32MB.");
@@ -91,8 +93,7 @@ export default function Uploader() {
 
           <div>
             <Text size="xl" inline>
-              Drag PDF here or click to select files
-            </Text>
+              {t('upload')}            </Text>
           </div>
         </Group>
       </Dropzone>

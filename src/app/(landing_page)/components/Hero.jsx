@@ -1,4 +1,6 @@
 import Image from 'next/image'
+import { useTranslations } from "next-intl";
+import Uploader from "@/app/components/Uploader";
 
 import { Button } from '../components/Button'
 import { Container } from '../components/Container'
@@ -8,11 +10,11 @@ import logoStatamic from '../images/logos/statamic.svg'
 import logoStaticKit from '../images/logos/statickit.svg'
 import logoTransistor from '../images/logos/transistor.svg'
 import logoTuple from '../images/logos/tuple.svg'
-import Uploader from "@/app/components/Uploader";
 
 export function Hero() {
+    const t = useTranslations('Hero')
   return (
-    <Container className="pt-20 pb-16 text-center lg:pt-32 ">
+    <Container className="pt-20 pb-16 text-center lg:pt-32">
       <h1 className="mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight text-slate-900 sm:text-7xl">
         {' '}
         <span className="relative whitespace-nowrap text-blue-600">
@@ -26,10 +28,10 @@ export function Hero() {
           </svg>
           <span className="relative">AInnotate</span>
         </span>{' '}
-        your PDF
+        Your PDF
       </h1>
-      <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-slate-700 my-12">
-        Get AI-Powered Annotations with Any Text-Selectable PDFs.
+      <p className="mx-auto mt-8 max-w-2xl text-lg tracking-tight text-slate-700 my-12">
+          {t('slogan')}
       </p>
         {/*
       <div className="mt-10 flex justify-center gap-x-6">
