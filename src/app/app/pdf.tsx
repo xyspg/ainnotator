@@ -28,6 +28,7 @@ import { useCompletion } from "ai/react";
 import { ClientOnly } from "@/lib/clientOnly";
 import axios from "axios";
 import { renderPdf } from "@/app/annotate/render";
+import PDFHeader from "@/app/components/PDFHeader";
 
 const PRIMARY_PDF_URL = "https://r2.xyspg.moe/pdf/the-birds";
 const SECONDARY_PDF_URL = "https://arxiv.org/pdf/1604.02480.pdf";
@@ -219,6 +220,10 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
   };
 
   const handleRender = async () => {
+    if (!highlights) {
+      toast.error("You don't have annotations yet")
+      return
+    }
     toast.promise(renderPdf(url, highlights), {
       loading: "Rendering Your PDF",
       success: "PDF Rendered",
@@ -229,9 +234,8 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
   return (
     <ClientOnly>
       <Toaster />
-      <div className="sticky h-16 bg-slate-100 flex flex-row justify-start items-center px-4 py-2">
-        <Button color="primary" onClick={handleRender} className="m-1">Export With Annotations</Button>
-      </div>
+      <PDFHeader />
+
       <div className="flex h-screen">
         <Sidebar
           highlights={highlights}
@@ -239,6 +243,7 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
           toggleDocument={toggleDocument}
           completion={completion}
           loading={isLoading}
+          onRender={handleRender}
           onAddAnnotation={() => {
             handleAddHighlight(position as Position);
           }}

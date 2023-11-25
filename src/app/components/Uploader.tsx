@@ -28,13 +28,16 @@ export default function Uploader() {
       });
       if (response.status === 413) {
         throw new Error("File is too large. Max size is 32MB.");
+      } else if (response.status === 425) {
+        throw new Error("Under Development")
+      } else if (response.status !== 200) {
+        throw new Error("Something went wrong");
       }
-
       const { uuid } = await response.json();
       setFileUUID(uuid);
     } catch (error: any) {
       setLoading(false);
-      toast.error(error.message);
+      toast.error(error.toString());
     }
   };
 

@@ -8,6 +8,7 @@ import {
 
 import { S3 } from "../s3"
 import {regularRatelimit} from "@/lib/upstash";
+import { isDev } from "@/lib/utils";
 
 const Bucket = process.env.R2_BUCKET || "";
 
@@ -16,7 +17,11 @@ export async function POST(req: Request) {
 
   const formData = await req.formData();
   const file = formData.get("file") as Blob;
-  console.log(file)
+
+  if (isDev()) {
+    return new Response(JSON.stringify({ message: "Under Development"}), { status: 425 });
+  }
+
   if (!file) {
     return new Response("No file", { status: 400 });
   }

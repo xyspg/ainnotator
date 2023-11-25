@@ -11,6 +11,7 @@ interface Props {
   loading: boolean;
   onAddAnnotation: () => void;
   onRemove: (highlight: IHighlight) => void;
+  onRender: () => void;
 }
 
 const updateHash = (highlight: IHighlight) => {
@@ -24,7 +25,8 @@ export function Sidebar({
   completion,
   loading,
   onAddAnnotation,
-    onRemove
+    onRemove,
+    onRender
 }: Props) {
 
     const [isCardVisible, setIsCardVisible] = useState(true);
@@ -43,7 +45,7 @@ export function Sidebar({
   return (
     <div className="w-[25vw] bg-neutral-100 text-neutral-900 font-sans font-light overflow-auto">
       <div className="p-8">
-        <h2 className="mb-1 font-sans text-3xl font-medium text-blue-600">AInnotator</h2>
+          <Button color="primary" onClick={onRender} className="m-1">Export With Annotations</Button>
 
         {/*<p>*/}
         {/*  To create area highlight hold ⌥ Option key (Alt), then click and drag.*/}
@@ -120,7 +122,7 @@ export function Sidebar({
 
 
       {highlights.length > 0 ? (
-        <div className="p-4">
+        <div className="p-4 mx-4">
           <Button color='danger' onClick={resetHighlights}>Reset highlights</Button>
         </div>
       ) : null}

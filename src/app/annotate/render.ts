@@ -118,7 +118,7 @@ export async function renderPdf(url: string, highlights: IHighlight[]) {
         Type: "Annot",
         Subtype: "Highlight",
         Rect: coords,
-        C: [1, 1, 0],
+        C: [1, 0.64, 0],
         QuadPoints: QuadPoints,
       });
       page.drawText("");

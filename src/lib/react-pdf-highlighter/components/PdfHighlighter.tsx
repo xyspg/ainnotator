@@ -36,6 +36,8 @@ import getBoundingRect from "../lib/get-bounding-rect";
 import getClientRects from "../lib/get-client-rects";
 import { HighlightLayer } from "./HighlightLayer";
 
+import {Input, Pagination} from "@nextui-org/react";
+
 export type T_ViewportHighlight<T_HT> = { position: Position } & T_HT;
 
 interface State<T_HT> {
@@ -53,6 +55,7 @@ interface State<T_HT> {
   tipChildren: JSX.Element | null;
   isAreaSelectionInProgress: boolean;
   scrolledToHighlightId: string;
+  currentPageNumber: number;
 }
 
 interface Props<T_HT> {
@@ -72,7 +75,6 @@ interface Props<T_HT> {
   onScrollChange: () => void;
   scrollRef: (scrollTo: (highlight: T_HT) => void) => void;
   pdfDocument: PDFDocumentProxy;
-  pdfScaleValue: string;
   onSelectionFinished: (
     position: ScaledPosition,
     context: string,
@@ -102,6 +104,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     tip: null,
     tipPosition: null,
     tipChildren: null,
+    currentPageNumber: 1,
   };
 
   eventBus = new EventBus();
@@ -130,6 +133,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
   componentDidMount() {
     this.init();
+    this.setState({ currentPageNumber: this.viewer.currentPageNumber });
   }
 
   attachRef = () => {
@@ -290,6 +294,17 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     };
   }
 
+  nextPage() {
+    this.viewer.nextPage();
+  }
+
+  prevPage() {
+    this.viewer.previousPage();
+  }
+
+  goToPage(page: number) {
+    this.viewer.currentPageNumber = page + 1;
+  }
   viewportPositionToScaled({
     pageNumber,
     boundingRect,
@@ -500,7 +515,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
     }
     for (let i = 0; i < pages.length; i++) {
       const page = await pdfDocument.getPage(pages[i]);
-      text += `\npage: ${pages[i]}\n`
+      text += `\npage: ${pages[i]}\n`;
       const pageText = await page.getTextContent();
       //@ts-ignore
       text += pageText.items.map((item) => item.str).join(" ");
@@ -573,6 +588,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
   handleScaleValue = () => {
     if (this.viewer) {
+      //@ts-ignore
       this.viewer.currentScaleValue = this.props.pdfScaleValue; //"page-width";
     }
   };
@@ -581,15 +597,32 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
   render() {
     const { onSelectionFinished, enableAreaSelection } = this.props;
-
+    const { currentPageNumber } = this.state;
     return (
       <div onPointerDown={this.onMouseDown}>
+        {/*<div className="my-1 p-1 flex flex-row justify-start items-center gap-2">*/}
+        {/*  <span>Go to page: </span>*/}
+        {/*    <Input*/}
+        {/*        type="number"*/}
+        {/*        size="sm"*/}
+        {/*        max={this.props.pdfDocument.numPages}*/}
+        {/*        value={currentPageNumber}*/}
+        {/*        onChange={(e) => {*/}
+        {/*        const value = parseInt(e.target.value);*/}
+        {/*            this.goToPage(value);*/}
+        {/*            this.setState({ currentPageNumber: value });*/}
+        {/*        }}*/}
+        {/*        />*/}
+        {/*  <span>/ {this.props.pdfDocument.numPages}</span>*/}
+        {/*</div>*/}
+
         <div
           ref={this.containerNodeRef}
           className="PdfHighlighter"
           onContextMenu={(e) => e.preventDefault()}
         >
           <div className="pdfViewer" />
+
           {this.renderTip()}
           {typeof enableAreaSelection === "function" ? (
             <MouseSelection
