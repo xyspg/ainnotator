@@ -11,7 +11,7 @@ export default function Uploader() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
-  const t = useTranslations('Hero')
+  const t = useTranslations("Hero");
   const handleUpload = async (file: FileWithPath[]) => {
     if (file[0].size >= 32 * 1024 * 1024) {
       toast.error("File is too large. Max size is 32MB.");
@@ -29,8 +29,8 @@ export default function Uploader() {
       if (response.status === 413) {
         throw new Error("File is too large. Max size is 32MB.");
       } else if (response.status === 425) {
-        throw new Error("Under Development")
-      } else if (response.status !== 200) {
+        throw new Error("Under Development");
+      } else if (response.status >= 400) {
         throw new Error("Something went wrong");
       }
       const { uuid } = await response.json();
@@ -96,7 +96,8 @@ export default function Uploader() {
 
           <div>
             <Text size="xl" inline>
-              {t('upload')}            </Text>
+              {t("upload")}{" "}
+            </Text>
           </div>
         </Group>
       </Dropzone>

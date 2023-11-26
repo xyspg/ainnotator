@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Uploader from "@/app/components/Uploader";
-import { Header } from "@/app/(landing_page)/components/Header"
+import { Header } from "@/app/components/Header"
 import { Hero } from "@/app/(landing_page)/components/Hero"
 import { PrimaryFeatures } from "@/app/(landing_page)/components/PrimaryFeatures"
 import { SecondaryFeatures } from "@/app/(landing_page)/components/SecondaryFeatures"
@@ -14,7 +14,6 @@ import { Footer } from "@/app/(landing_page)/components/Footer"
 export default function Home() {
   return (
     <main>
-        <Header />
         <main>
             <Hero />
             <PrimaryFeatures />

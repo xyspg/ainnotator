@@ -12,6 +12,8 @@ import { Providers } from "@/app/providers";
 
 import clsx from "clsx";
 import "./globals.css";
+import { TailwindIndicator } from "@/app/components/tailwind-indicator";
+import { Header } from "@/app/components/Header";
 
 export const metadata: Metadata = {
   title: "AInnotator",
@@ -48,8 +50,12 @@ export default function RootLayout({
         )}
       >
         <Providers>
-          <MantineProvider>{children}</MantineProvider>
+          <MantineProvider>
+            <Header />
+            {children}
+          </MantineProvider>
         </Providers>
+        <TailwindIndicator />
       </body>
     </html>
   );

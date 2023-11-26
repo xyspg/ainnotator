@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import Uploader from "@/app/components/Uploader";
 
 import { Button } from '../components/Button'
@@ -10,6 +11,8 @@ import logoStatamic from '../images/logos/statamic.svg'
 import logoStaticKit from '../images/logos/statickit.svg'
 import logoTransistor from '../images/logos/transistor.svg'
 import logoTuple from '../images/logos/tuple.svg'
+
+import {Auth} from "@/app/(main)/[locale]/(auth)/Auth";
 
 export function Hero() {
     const t = useTranslations('Hero')
