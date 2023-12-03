@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
@@ -9,6 +10,7 @@ import "@mantine/dropzone/styles.css";
 
 import { MantineProvider } from "@mantine/core";
 import { Providers } from "@/app/providers";
+import { createClient } from "@/lib/supabase/server";
 
 import clsx from "clsx";
 import "./globals.css";
@@ -24,7 +26,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const lexend = Lexend({ subsets: ["latin"] });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   params: { locale },
 }: {
@@ -33,11 +35,17 @@ export default function RootLayout({
     locale: string;
   };
 }) {
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
+    const { data: user, error } = await supabase.auth.getUser();
+
+
   return (
     <html lang={locale}>
       <Script
         src="https://analytics.xyspg.moe/script.js"
         data-website-id="e71f6eac-cb58-4f71-a21d-fb10c75394a2"
+        data-domains="ainnotator.com"
         async
       />
       <body
@@ -51,7 +59,7 @@ export default function RootLayout({
       >
         <Providers>
           <MantineProvider>
-            <Header />
+            <Header user={user.user}/>
             {children}
           </MantineProvider>
         </Providers>

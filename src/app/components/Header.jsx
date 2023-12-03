@@ -1,16 +1,21 @@
-"use client"
-import { Fragment } from "react";
+"use client";
+import { Fragment, useEffect } from "react";
 import Link from "next/link";
 import { Popover, Transition } from "@headlessui/react";
 import clsx from "clsx";
 
 import { Button } from "../(landing_page)/components/Button";
+import { useAnalytics } from "@/lib/hooks/use-analytics";
 import { Container } from "../(landing_page)/components/Container";
 import { Logo } from "../(landing_page)/components/Logo";
 import { NavLink } from "../(landing_page)/components/NavLink";
 import Toast, { toast } from "react-hot-toast";
-import { useState } from 'react'
-import {AuthModal} from "@/app/(main)/[locale]/(auth)/Auth";
+import { useState } from "react";
+import { AuthModal } from "@/app/(main)/[locale]/(auth)/Auth";
+import { createClient } from "@/lib/supabase/client";
+import {useRouter} from "next/navigation";
+
+const supabase = createClient();
 
 function MobileNavLink({ href, children }) {
   return (
@@ -93,8 +98,10 @@ function MobileNavigation() {
   );
 }
 
-export function Header() {
-  const [modalOpen, setModalOpen] = useState(false)
+export function Header({ user }) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const router = useRouter()
+  const { analytics } = useAnalytics();
   return (
     <>
       <header className="py-10">
@@ -113,13 +120,34 @@ export function Header() {
               </div>
             </div>
             <div className="flex items-center gap-x-5 md:gap-x-8">
-              <Button className="hidden md:block" onClick={()=>{setModalOpen(
-                  true
-              )}} color="blue">
-                <span>
-                  Sign In
-                </span>
-              </Button>
+              {user ? (
+                <>
+                  <Button
+                    onClick={async () => {
+                      await supabase.auth.signOut();
+                      // analytics.track("Click Sign Out Button");
+                      router.refresh();
+                    }}
+                  >
+                    Sign Out
+                  </Button>
+                  <p>{user?.email}</p>
+                </>
+              ) : (
+                <>
+                  <Button
+                    className="hidden md:block"
+                    onClick={() => {
+                      setModalOpen(true);
+                      // analytics.track("Open Sign In Modal")
+                    }}
+                    color="blue"
+                  >
+                    <span>Sign In</span>
+                  </Button>
+                </>
+              )}
+
               <div className="-mr-1 md:hidden">
                 <MobileNavigation />
               </div>

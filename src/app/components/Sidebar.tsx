@@ -43,7 +43,7 @@ export function Sidebar({
     }, [completion]);
 
   return (
-    <div className="w-[25vw] bg-neutral-100 text-neutral-900 font-sans font-light overflow-auto">
+    <div className="w-[25vw] text-neutral-900 font-sans font-light">
       <div className="p-8">
           <Button color="primary" onClick={onRender} className="m-1">Export With Annotations</Button>
 
@@ -85,7 +85,7 @@ export function Sidebar({
         </Card>
       ) }
 
-      <ul className="p-8 text-md font-sans font-light flex flex-col gap-4 ">
+      <ul className="p-8 text-md font-sans font-light flex flex-col gap-4 overflow-auto ">
         {highlights.map((highlight, index) => (
           <li
             key={index}

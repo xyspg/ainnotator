@@ -1,13 +1,11 @@
 import { PDF } from "@/app/app/pdf";
-import { notFound } from 'next/navigation'
+import { notFound } from "next/navigation";
 
 import { GetObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { S3 } from "@/app/api/s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { Button } from "@nextui-org/react";
-import { redis } from "@/lib/upstash";
-import Link from "next/link";
-import {IHighlight} from "@/lib/react-pdf-highlighter";
+import { createClient } from "@/lib/supabase/client";
+import { IHighlight } from "@/lib/react-pdf-highlighter";
 
 const Bucket = process.env.R2_BUCKET || "";
 
@@ -26,7 +24,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   const annotation = await getAnnotation(params.slug);
 
   if (!isExist) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -36,7 +34,15 @@ export default async function Page({ params }: { params: { slug: string } }) {
   );
 }
 
-async function getAnnotation( id: string ): Promise<IHighlight[]> {
-    const response =  await redis.get(id);
-    return response as unknown as IHighlight[];
+async function getAnnotation(id: string): Promise<IHighlight[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("uploads")
+    .select("annotations")
+    .eq("file_id", id);
+  if (error) {
+    console.log(error);
+    return [];
+  }
+  return data[0].annotations as unknown as IHighlight[];
 }

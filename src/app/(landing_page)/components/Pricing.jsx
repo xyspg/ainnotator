@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import React from 'react'
 
 import { Button } from '../components/Button'
 import { Container } from '../components/Container'
@@ -46,51 +47,66 @@ function CheckIcon({ className }) {
   )
 }
 
-function Plan({ name, price, description, href, features, featured = false }) {
-  return (
-    <section
-      className={clsx(
-        'flex flex-col rounded-3xl px-6 sm:px-8',
-        featured ? 'order-first bg-blue-600 py-8 lg:order-none' : 'lg:py-8'
-      )}
-    >
-      <h3 className="mt-5 font-display text-lg text-white">{name}</h3>
-      <p
+function Plan({ name, price, discountedPrice, description, href, features, featured = false, tag, tagColor = 'green' }) {
+
+
+    return (
+      <section
         className={clsx(
-          'mt-2 text-base',
-          featured ? 'text-white' : 'text-slate-400'
+          "flex flex-col rounded-3xl px-6 sm:px-8 relative",
+          featured ? "order-first bg-blue-600 py-8 lg:order-none" : "lg:py-8",
         )}
       >
-        {description}
-      </p>
-      <p className="order-first font-display text-5xl font-light tracking-tight text-white">
-        {price}
-      </p>
-      <ul
-        role="list"
-        className={clsx(
-          'order-last mt-10 flex flex-col gap-y-3 text-sm',
-          featured ? 'text-white' : 'text-slate-200'
+        <h3 className="mt-5 font-display text-lg text-white">{name}</h3>
+        <p
+          className={clsx(
+            "mt-2 text-base",
+            featured ? "text-white" : "text-slate-400",
+          )}
+          dangerouslySetInnerHTML={{ __html: description }}
+        ></p>
+        <p className="order-first font-display text-5xl font-light tracking-tight text-white">
+          {discountedPrice ? (
+            <span>
+              <span className="text-xl font-medium text-slate-200 line-through">
+                {price}
+              </span>{" "}
+              {discountedPrice}
+            </span>
+          ) : (
+            price
+          )}
+        </p>
+        {tag && (
+            <p className={clsx('absolute right-10 top-10 rounded-full', `bg-${tagColor}-400/10 px-2 py-1 text-xs font-semibold leading-5`, `text-${tagColor}-400`)}>{tag}</p>
         )}
-      >
-        {features.map((feature) => (
-          <li key={feature} className="flex">
-            <CheckIcon className={featured ? 'text-white' : 'text-slate-400'} />
-            <span className="ml-4">{feature}</span>
-          </li>
-        ))}
-      </ul>
-      <Button
-        href={href}
-        variant={featured ? 'solid' : 'outline'}
-        color="white"
-        className="mt-8"
-        aria-label={`Get started with the ${name} plan for ${price}`}
-      >
-        Get started
-      </Button>
-    </section>
-  )
+        <ul
+          role="list"
+          className={clsx(
+            "order-last mt-10 flex flex-col gap-y-3 text-sm",
+            featured ? "text-white" : "text-slate-200",
+          )}
+        >
+          {features.map((feature) => (
+            <li key={feature} className="flex">
+              <CheckIcon
+                className={featured ? "text-white" : "text-slate-400"}
+              />
+              <span className="ml-4">{feature}</span>
+            </li>
+          ))}
+        </ul>
+        <Button
+          href={href}
+          variant={featured ? "solid" : "outline"}
+          color="white"
+          className="mt-8"
+          aria-label={`Get started with the ${name} plan for ${price}`}
+        >
+          Get started
+        </Button>
+      </section>
+    );
 }
 
 export function Pricing() {
@@ -103,22 +119,22 @@ export function Pricing() {
       <Container>
         <div className="md:text-center">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
+              如有需要请{' '}
             <span className="relative whitespace-nowrap">
               <SwirlyDoodle className="absolute top-1/2 left-0 h-[1em] w-full fill-blue-400" />
-              <span className="relative">Simple pricing,</span>
+              <span className="relative text-blue-400">购买次数</span>
             </span>{' '}
-            for everyone.
+           哦，感谢您的支持！
           </h2>
           <p className="mt-4 text-lg text-slate-400">
-            It doesn’t matter what size your business is, our software won’t
-            work well for you.
+            AInnotator 需要负担高昂的服务器、云存储 成本，LLM API 成本，如果 AInnotator 有帮助到您，请考虑付费使用。
           </p>
         </div>
         <div className="-mx-4 mt-16 grid max-w-2xl grid-cols-1 gap-y-10 sm:mx-auto lg:-mx-8 lg:max-w-none lg:grid-cols-3 xl:mx-0 xl:gap-x-8">
           <Plan
-            name="Starter"
-            price="$9"
-            description="Good for anyone who is self-employed and just getting started."
+            name="Free"
+            price="$0"
+            description="注册即可获赠 50 次免费次数"
             href="/register"
             features={[
               'Send 10 quotes and invoices',
@@ -129,11 +145,12 @@ export function Pricing() {
             ]}
           />
           <Plan
-            featured
-            name="Small business"
+            name="500 AInnotations"
+            discountedPrice="$4.9"
             price="$15"
-            description="Perfect for small / medium sized businesses."
+            description="限时黑五折扣：50% OFF"
             href="/register"
+            tag={'热销'}
             features={[
               'Send 25 quotes and invoices',
               'Connect up to 5 bank accounts',
@@ -145,9 +162,12 @@ export function Pricing() {
             ]}
           />
           <Plan
-            name="Enterprise"
-            price="$39"
-            description="For even the biggest enterprise companies."
+              featured
+            name="2500 AInnotations"
+            price="$40"
+            discountedPrice="$19.8"
+            description="限时黑五折扣：50% OFF"
+              tag={'性价比最高'}
             href="/register"
             features={[
               'Send unlimited quotes and invoices',

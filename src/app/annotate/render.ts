@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@nextui-org/react";
 import {
   PDFArray,
   PDFDocument,
@@ -8,7 +7,7 @@ import {
   StandardFonts,
 } from "pdf-lib";
 import { IHighlight } from "@/lib/react-pdf-highlighter";
-import { testData } from "@/app/annotate/data";
+import { testData } from "@/app/annotate/test-data";
 
 interface Coordinates {
   x1: number;
@@ -63,6 +62,7 @@ export async function renderPdf(url: string, highlights: IHighlight[]) {
     const pageWidth = page.getWidth();
     const boundingRect = annotationEntry.position.boundingRect;
     const { x1, y1, x2, y2 } = boundingRect;
+    // correct the coordinates
     const coords = correctCoordinates(
       {
         x1,
@@ -87,10 +87,12 @@ export async function renderPdf(url: string, highlights: IHighlight[]) {
       Contents: PDFString.of(textToAnnotate),
     });
     const annotationRef = pdfDoc.context.register(annotation);
+
     /* DO NOT REMOVE THIS LINE
      * IDK why there is error after remove it
      */
     page.drawText("");
+
     const annots = page.node.lookup(PDFName.of("Annots"), PDFArray);
     annots.push(annotationRef);
 

@@ -59,6 +59,10 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
   const pathname = usePathname()
   const uuid = pathname.split("/")[2]
 
+
+
+
+
   useEffect(() => {
     async function sendData() {
       try {
@@ -165,6 +169,7 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
       body: {
         data: {
           context,
+          "pdf_id": uuid
         },
       },
     });
@@ -232,9 +237,8 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
   }
 
   return (
-    <ClientOnly>
+    <>
       <Toaster />
-      <PDFHeader />
 
       <div className="flex h-screen">
         <Sidebar
@@ -275,7 +279,7 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
           </PdfLoader>
         </div>
       </div>
-    </ClientOnly>
+    </>
   );
 };
 

@@ -9,7 +9,6 @@ export default function LocaleLayout({
   params: { locale },
 }: {
   children: React.ReactNode;
-  modal: React.ReactNode;
   params: { locale: string };
 }) {
   // Validate that the incoming `locale` parameter is valid
@@ -20,4 +19,10 @@ export default function LocaleLayout({
       {children}
     </NextIntlClientProvider>
   );
+
+}
+
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({locale}));
 }

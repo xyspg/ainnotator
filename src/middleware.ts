@@ -1,13 +1,31 @@
 import createMiddleware from 'next-intl/middleware';
+import createIntlMiddleware from 'next-intl/middleware';
+import type {NextRequest} from "next/server";
+import { createClient } from "@/lib/supabase/middleware";
 
-export default createMiddleware({
-    // A list of all locales that are supported
-    locales: ['en', 'zh-CN'],
 
-    // Used when no locale matches
-    defaultLocale: 'en',
-    localePrefix: 'never'
-});
+export default async function middleware(request: NextRequest) {
+    // Step 1: Use the incoming request (example)
+    const defaultLocale = request.headers.get('x-default-locale') || 'en';
+
+    // Step 2: Create and call the next-intl middleware (example)
+    const handleI18nRouting = createIntlMiddleware({
+        locales: ['en', 'zh-CN'],
+
+        defaultLocale: 'en',
+        localePrefix: 'never'
+    });
+
+    const { supabase } = createClient(request);
+
+    await supabase.auth.getSession();
+
+    const response = handleI18nRouting(request);
+
+    response.headers.set('x-default-locale', defaultLocale);
+
+    return response;
+}
 
 export const config = {
     // Match only internationalized pathnames
