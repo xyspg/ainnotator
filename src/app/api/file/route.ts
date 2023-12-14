@@ -28,11 +28,6 @@ export async function POST(req: Request): Promise<Response> {
     });
   }
 
-  if (!isDev()) {
-    return new Response(JSON.stringify({ message: "Under Development" }), {
-      status: 425,
-    });
-  }
 
   if (!file) {
     return new Response("No file", { status: 400 });
