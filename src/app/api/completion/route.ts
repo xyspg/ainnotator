@@ -65,7 +65,7 @@ export async function POST(req: Request) {
     .eq("id", userId)
     .single();
 
-  if (balance?.ainnotation_credit < 10000) {
+  if (balance?.ainnotation_credit < 1) {
     return new Response(
       JSON.stringify({
         message: "You have no enough credit. Please purchase some.",
