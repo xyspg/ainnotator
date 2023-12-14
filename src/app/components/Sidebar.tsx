@@ -172,9 +172,6 @@ export function Sidebar({
           </Button>
         </div>
       ) : null}
-      <div className="p-4 mb-8">
-        <CreditIndicator />
-      </div>
     </div>
   );
 }
