@@ -55,7 +55,6 @@ export default function AuthModalPage() {
           <div className="flex flex-col w-1/2 space-y-4 bg-gray-50 px-4 py-1">
             <Auth
               supabaseClient={supabase}
-              redirectTo="/"
               view="sign_up"
               additionalData={{
                 referred_by: refererCode,

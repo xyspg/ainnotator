@@ -7,6 +7,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/app/store";
+import {nanoid} from "nanoid";
 
 export const AuthModal = ({
   showModal,
@@ -67,7 +68,9 @@ export const AuthModal = ({
             <div className="flex flex-col w-1/2 space-y-4 bg-gray-50 px-4 py-1">
               <Auth
                 supabaseClient={supabase}
-                redirectTo="https://localhost:3000/"
+                additionalData={{
+                  referer_code: nanoid(9),
+                }}
                 localization={{
                   variables: {
                     sign_up: {
