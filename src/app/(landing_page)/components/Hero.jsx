@@ -13,6 +13,13 @@ import logoTransistor from "../images/logos/transistor.svg";
 import logoTuple from "../images/logos/tuple.svg";
 
 import { Auth } from "@/app/(main)/[locale]/(auth)/Auth";
+import {
+    AlertDialog,
+    AlertDialogAction, AlertDialogCancel,
+    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
+    AlertDialogHeader, AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/app/components/ui/alert-dialog";
 
 export function Hero() {
   const t = useTranslations("Hero");
@@ -93,6 +100,22 @@ export function Hero() {
       </div>
 
       */}
+        <AlertDialog defaultOpen={true}>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle className="text-red-500">DEVELOPER PREVIEW VERSION</AlertDialogTitle>
+                    <AlertDialogDescription className=''>
+                        VERY UNSTABLE! USE AT YOU OWN RISK!
+                        PLEASE REPORT ANY BUGS TO ME
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogAction>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+
+
     </Container>
   );
 }
