@@ -8,11 +8,11 @@ export function CreditIndicator() {
   //@ts-ignore
   const fetcher = (...args) => fetch(...args).then((res) => res.json());
   const { data, error } = useSWR("/api/credit", fetcher);
-  console.log(data);
+  const count = data?.count;
   return (
     <Link href="/pricing" target="_blank" className="flex flex-row items-center gap-1">
       <FaCoins />
-      {data?.count}
+      {count ? count : 0}
     </Link>
   );
 }
