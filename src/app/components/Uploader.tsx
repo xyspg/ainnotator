@@ -12,7 +12,7 @@ export default function Uploader() {
   const [fileUUID, setFileUUID] = useState("");
   const [loading, setLoading] = useState(false);
   const apiKey = useOpenAIKeyStore((state) => state.apiKey);
-  console.log('user api key', apiKey)
+  console.log("user api key", apiKey);
 
   const router = useRouter();
   const t = useTranslations("Hero");
@@ -42,9 +42,7 @@ export default function Uploader() {
       setLoading(false);
       toast.error(error.toString());
     }
-
   };
-
 
   useEffect(() => {
     if (fileUUID) {
@@ -55,6 +53,7 @@ export default function Uploader() {
   return (
     <>
       <Toaster />
+      {/*
       <Input
           className='py-2'
         placeholder="OpenAI API Key"
@@ -64,6 +63,8 @@ export default function Uploader() {
         }}
 
         />
+
+        */}
       <Dropzone
         onDrop={(file) => {
           handleUpload(file);

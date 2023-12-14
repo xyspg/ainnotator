@@ -1,25 +1,18 @@
-import {FaCoins} from "react-icons/fa";
-import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
+import { FaCoins } from "react-icons/fa";
 import { createClient } from "@/lib/supabase/client";
 import { cookies } from "next/headers";
+import useSWR from "swr";
+import Link from "next/link";
 
-export function CreditIndicator({ user }) {
-    const supabase = createClient()
-    const { data } = useQuery(
-        supabase
-            .from("users")
-            .select("ainnotation_credit", { count: "exact" })
-            .eq("id", user?.id),
-        {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-        }
-    )
-    console.log("credit",data)
-    return (
-        <div className="flex flex-row items-center gap-1">
-            <FaCoins/>
-            {data?.[0]?.ainnotation_credit}
-        </div>
-    )
+export function CreditIndicator() {
+  //@ts-ignore
+  const fetcher = (...args) => fetch(...args).then((res) => res.json());
+  const { data, error } = useSWR("/api/credit", fetcher);
+  console.log(data);
+  return (
+    <Link href="/pricing" target="_blank" className="flex flex-row items-center gap-1">
+      <FaCoins />
+      {data?.count}
+    </Link>
+  );
 }

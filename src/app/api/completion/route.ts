@@ -3,7 +3,6 @@ import { OpenAIStream, StreamingTextResponse } from "ai";
 import { openaiRatelimit } from "@/lib/upstash";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
-import { equal } from "assert";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY not set");
@@ -66,10 +65,10 @@ export async function POST(req: Request) {
     .eq("id", userId)
     .single();
 
-  if (balance?.ainnotation_credit < 1) {
+  if (balance?.ainnotation_credit < 10000) {
     return new Response(
       JSON.stringify({
-        message: "You have no enough credit. Please buy more credit.",
+        message: "You have no enough credit. Please purchase some.",
       }),
       { status: 402 },
     );
@@ -82,7 +81,6 @@ export async function POST(req: Request) {
     Always provide assistance based on the document type and content that user uploaded. 
     
     # What you should do
-    KEEP THE RETURN CONTENT LESS THAN 20 WORDS.
     * Annotate the given $sentence in the $context section with brief $comments. 
     * OMIT prefixes like "this sentence/proposal/statement says..." , directly go to the comment content.
     * DO NOT keep referencing the title of the document or the overall context (eg. this sentence is a part of an analysis on the movie xxxx).   People work in this annotator continuously so just focus on the given comments.
@@ -132,15 +130,27 @@ export async function POST(req: Request) {
     
        */
 
-  async function deductCredit(response: string) {
+  async function insertRecord(response: string) {
+    console.log("deduction start");
     const amount = 1;
-
+    console.log({
+      user_id: userId,
+      prompt: prompt,
+      context: context.replace(/\u0000/g, ""),
+      response,
+      type: "single",
+      amount,
+      model,
+      original_balance: balance?.ainnotation_credit,
+      current_balance: balance?.ainnotation_credit - amount,
+      file_id: pdf_id,
+    });
     const { error: insertionError } = await supabase
       .from("ainnotation_usage")
       .insert({
         user_id: userId,
         prompt: prompt,
-        context: context,
+        context: context.replace(/\u0000/g, ""),
         response,
         type: "single",
         amount,
@@ -149,6 +159,8 @@ export async function POST(req: Request) {
         current_balance: balance?.ainnotation_credit - amount,
         file_id: pdf_id,
       });
+
+    console.log("insertion error", insertionError);
 
     if (insertionError) {
       return new Response(insertionError.message, { status: 500 });
@@ -160,17 +172,16 @@ export async function POST(req: Request) {
         ainnotation_credit: balance?.ainnotation_credit - amount,
       })
       .eq("id", userId);
-
+    console.log("deduction error, ", deductionError);
     if (deductionError) {
       return new Response(deductionError.message, { status: 500 });
     }
   }
 
   // after the completion, save the response to the database
-
   const stream = OpenAIStream(response, {
-    onFinal: (resp) => {
-      deductCredit(resp);
+    onFinal: async (resp) => {
+      await insertRecord(resp);
     },
   });
 

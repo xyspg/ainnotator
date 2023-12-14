@@ -18,7 +18,11 @@ interface Coordinates {
   scaledHeight: number;
 }
 
-export async function renderPdf(url: string, highlights: IHighlight[]) {
+export async function renderPdf(
+  url: string,
+  highlights: IHighlight[],
+  filename: string,
+) {
   /*
    * PDF Highlighter 和 PDF Lib 的坐标系不一样
    * a helper function to correct coordinates
@@ -48,7 +52,7 @@ export async function renderPdf(url: string, highlights: IHighlight[]) {
     arrayBuffer = await fetch(url).then((res) => res.arrayBuffer());
   } catch (err: any) {
     console.error(err.toString());
-    throw new Error(`Failed to fetch PDF file: ${err.toString()}`)
+    throw new Error(`Failed to fetch PDF file: ${err.toString()}`);
   }
   const pdfDoc = await PDFDocument.load(arrayBuffer);
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -137,7 +141,7 @@ export async function renderPdf(url: string, highlights: IHighlight[]) {
   const downloadUrl = window.URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = downloadUrl;
-  link.setAttribute("download", "filename.pdf");
+  link.setAttribute("download", `${filename}.pdf`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

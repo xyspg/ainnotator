@@ -1,5 +1,5 @@
-import {NextIntlClientProvider, useMessages} from "next-intl";
-import {notFound} from 'next/navigation'; // Can be imported from a shared config
+import { NextIntlClientProvider, useMessages } from "next-intl";
+import { notFound } from "next/navigation"; // Can be imported from a shared config
 
 // Can be imported from a shared config
 const locales = ["en", "zh-CN"];
@@ -19,10 +19,8 @@ export default function LocaleLayout({
       {children}
     </NextIntlClientProvider>
   );
-
 }
 
-
 export function generateStaticParams() {
-  return locales.map((locale) => ({locale}));
+  return locales.map((locale) => ({ locale }));
 }

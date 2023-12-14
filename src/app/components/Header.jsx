@@ -12,9 +12,10 @@ import Toast, { toast } from "react-hot-toast";
 import { useState } from "react";
 import { AuthModal } from "@/app/(main)/[locale]/(auth)/Auth";
 import { createClient } from "@/lib/supabase/client";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FaCoins } from "react-icons/fa";
-import {CreditIndicator} from "@/app/components/credit-indicator";
+import { CreditIndicator } from "@/app/components/credit-indicator";
+import { UserDropdown } from "@/app/components/UserDropdown";
 
 const supabase = createClient();
 
@@ -89,9 +90,8 @@ function MobileNavigation() {
           >
             <MobileNavLink href="#features">History</MobileNavLink>
             <MobileNavLink href="#testimonials">Pricing</MobileNavLink>
-            <MobileNavLink href="#pricing">Feedback</MobileNavLink>
             <hr className="m-2 border-slate-300/40" />
-            <MobileNavLink href="/login">Sign in</MobileNavLink>
+            <MobileNavLink href="/signup">Sign Up</MobileNavLink>
           </Popover.Panel>
         </Transition.Child>
       </Transition.Root>
@@ -101,7 +101,7 @@ function MobileNavigation() {
 
 export function Header({ user, credit }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   return (
     <>
       <header className="py-10">
@@ -116,22 +116,12 @@ export function Header({ user, credit }) {
               <div className="hidden md:flex md:gap-x-6">
                 <NavLink href="/history">History</NavLink>
                 <NavLink href="/pricing">Pricing</NavLink>
-                <NavLink href="/feedback">Feedback</NavLink>
               </div>
             </div>
             <div className="flex items-center gap-x-5 md:gap-x-8">
               {user ? (
                 <>
-                  <Button
-                    onClick={async () => {
-                      await supabase.auth.signOut();
-                      // analytics.track("Click Sign Out Button");
-                      router.refresh();
-                    }}
-                  >
-                    Sign Out
-                  </Button>
-                  <p>{user?.email}</p>
+                  <UserDropdown user={user} />
                 </>
               ) : (
                 <>
@@ -147,6 +137,7 @@ export function Header({ user, credit }) {
                   </Button>
                 </>
               )}
+              {user && <CreditIndicator />}
 
               <div className="-mr-1 md:hidden">
                 <MobileNavigation />

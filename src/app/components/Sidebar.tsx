@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, CardHeader, Progress } from "@nextui-org/react";
 import type { IHighlight } from "@/lib/react-pdf-highlighter";
 import { Card, CardBody, CardFooter, Divider } from "@nextui-org/react";
+import { CreditIndicator } from "@/app/components/credit-indicator";
 
 interface Props {
   highlights: Array<IHighlight>;
@@ -43,7 +44,7 @@ export function Sidebar({
     onAddAnnotation(null);
   };
 
-  /*
+  /**
    * 在 completion 变化时，将卡片设置为可见
    */
 
@@ -51,7 +52,7 @@ export function Sidebar({
     setIsCardVisible(true);
   }, [completion]);
 
-  /*
+  /**
    * 自定义批注，响应 MouseUp 事件
    * 将选中的文本保存到 textSelection 中
    */
@@ -61,7 +62,6 @@ export function Sidebar({
       setTextSelection(selection);
     }
   };
-
 
   return (
     <div className="w-[25vw] text-neutral-900 font-sans font-light">
@@ -99,17 +99,26 @@ export function Sidebar({
         ))}
       {completion && isCardVisible && (
         <Card className="mx-2">
-          <CardBody onMouseUp={handleMouseUp}>{completion}</CardBody>
+          <CardBody
+            onMouseUp={handleMouseUp}
+            data-tg-tour="<span>Select some text to create partial ainnotation</span>"
+          >
+            {completion}
+          </CardBody>
           <Divider />
           {completion && !loading && (
             <div className="p-4 flex flex-col gap-2">
               <Button color="primary" onClick={handleAddAnnotation}>
                 Add Annotation
               </Button>
-              {textSelection && (
-                  <Button color="secondary" onClick={handleAddAnnotation}>
-                    Add Custom Annotation
-                  </Button>
+              {textSelection ? (
+                <Button color="secondary" onClick={handleAddAnnotation}>
+                  Add Custom Annotation
+                </Button>
+              ) : (
+                <Button color="secondary" disabled>
+                  Select some text to add partially
+                </Button>
               )}
             </div>
           )}
@@ -163,6 +172,9 @@ export function Sidebar({
           </Button>
         </div>
       ) : null}
+      <div className="p-4 mb-8">
+        <CreditIndicator />
+      </div>
     </div>
   );
 }

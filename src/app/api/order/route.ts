@@ -43,19 +43,25 @@ export async function POST(request: Request) {
       },
     );
   }
-  const data = await response.json();
-  console.log(data);
-  const resUrlKey = data.result.urlkey; // 面包多 Product ID
+  const merchantResponseData = await response.json();
+  console.log(merchantResponseData);
+  const resUrlKey = merchantResponseData.result.urlkey; // 面包多 Product ID
+
   // find the amount
   const product = PRODUCTS.find((item) => item.pid === resUrlKey);
   const amount = product ? product.amount : 0;
 
   // below is changed to always true for development
   if (resUrlKey === urlKey || process.env.NODE_ENV === "development") {
-    // update order
+    // update order with merchant response
     const { data: orderData, error: UpdateError } = await supabase
       .from("orders")
-      .update({ status: "completed" })
+      .update({
+        status: "completed",
+        merchant: merchantResponseData,
+        payment_method: "mianbaoduo",
+        real_payment_amount: merchantResponseData.result.real_amount,
+      })
       .eq("order_id", id);
 
     const { error: TransactionError } = await supabase

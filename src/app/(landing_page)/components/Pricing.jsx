@@ -136,36 +136,39 @@ function Plan(
 }
 
 export function Pricing({ user }) {
+  console.log(user);
   const [modalOpen, setModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [currentOrderId, setCurrentOrderId] = useState(null);
   const router = useRouter();
-  const checkoutUrl500 = "https://mbd.pub/o/bread/ZZeWkp1q";
-  const checkoutUrl2500 = "https://mbd.pub/o/bread/ZZeak5tt";
 
-  // TODO: Only able to check out after login
-
-  function generateOrderId(url) {
+  function generateOrderId() {
     return Math.random().toString(36).slice(2, 9);
   }
 
+  /**
+   * 处理购买逻辑，生成订单，将订单信息存入数据库，跳转到支付页面
+   * @param amount
+   * @returns {Promise<void>}
+   */
   async function checkOut(amount) {
-    const url = amount === 500 ? checkoutUrl500 : checkoutUrl2500;
+    if (!user) {
+      toast("请先登录哦");
+      return;
+    }
     const thisProduct = PRODUCTS.find((p) => p.amount === amount);
+    const url = thisProduct.url;
     setCurrentProduct(thisProduct);
     // 生成订单id
-    const orderId = generateOrderId(url);
+    const orderId = generateOrderId();
     setCurrentOrderId(orderId);
 
-    // TODO: Save orderId to database
     try {
       await fetch("/api/order/add", {
         method: "POST",
         body: JSON.stringify({
           orderId,
-          userId: user?.id,
-          email: user?.email,
-          product: thisProduct,
+          productId: thisProduct.id,
         }),
       }).then((res) => res.json());
     } catch (e) {
@@ -234,11 +237,9 @@ export function Pricing({ user }) {
             description="注册即可获赠 50 次免费次数"
             href="/signup"
             features={[
-              "Send 10 quotes and invoices",
-              "Connect up to 2 bank accounts",
-              "Track up to 15 expenses per month",
-              "Manual payroll support",
-              "Export up to 3 reports",
+              "一键导出批注后的 PDF",
+              "批注内容云端同步",
+              "50 GB 云存储空间",
             ]}
           />
           <Plan
@@ -250,13 +251,10 @@ export function Pricing({ user }) {
             tag={"热销"}
             onButtonClick={() => checkOut(500)}
             features={[
-              "Send 25 quotes and invoices",
-              "Connect up to 5 bank accounts",
-              "Track up to 50 expenses per month",
-              "Automated payroll support",
-              "Export up to 12 reports",
-              "Bulk reconcile transactions",
-              "Track in multiple currencies",
+              "一键导出批注后的 PDF",
+              "批注内容云端同步",
+              "50 GB 云存储空间",
+              "自动 PDF 全文批注（即将上线）",
             ]}
           />
           <Plan
@@ -264,16 +262,15 @@ export function Pricing({ user }) {
             name="2500 AInnotations"
             price="$40"
             discountedPrice="$19.8"
-            description="限时黑五折扣：50% OFF"
+            description="限时圣诞折扣：50% OFF"
             tag={"性价比最高"}
             target={"_blank"}
             onButtonClick={() => checkOut(2500)}
             features={[
-              "Send unlimited quotes and invoices",
-              "Connect up to 15 bank accounts",
-              "Track up to 200 expenses per month",
-              "Automated payroll support",
-              "Export up to 25 reports, including TPS",
+              "一键导出批注后的 PDF",
+              "批注内容云端同步",
+              "50 GB 云存储空间",
+              "自动 PDF 全文批注（即将上线）",
             ]}
           />
         </div>

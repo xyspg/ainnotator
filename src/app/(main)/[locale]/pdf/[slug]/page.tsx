@@ -29,20 +29,24 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
   return (
     <>
-      <PDF pdf={src} annotation={annotation} />
+      <PDF
+        pdf={src}
+        annotation={annotation[0].annotations}
+        filename={annotation[0].filename}
+      />
     </>
   );
 }
 
-async function getAnnotation(id: string): Promise<IHighlight[]> {
-  const supabase = createClient();
+const supabase = createClient();
+async function getAnnotation(id: string) {
   const { data, error } = await supabase
     .from("uploads")
-    .select("annotations")
+    .select("annotations, filename")
     .eq("file_id", id);
   if (error) {
     console.log(error);
     return [];
   }
-  return data[0].annotations as unknown as IHighlight[];
+  return data;
 }

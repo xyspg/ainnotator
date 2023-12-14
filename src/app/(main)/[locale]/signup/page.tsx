@@ -1,23 +1,18 @@
 "use client";
 import Link from "next/link";
-import {Auth} from "@supabase/auth-ui-react";
-import {createClient} from "@/lib/supabase/client";
-import {ThemeSupa} from "@supabase/auth-ui-shared";
-import {useSearchParams} from "next/navigation";
-import toast, {Toaster} from "react-hot-toast";
+import { Auth } from "@supabase/auth-ui-react";
+import { createClient } from "@/lib/supabase/client";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { useSearchParams } from "next/navigation";
+import toast, { Toaster } from "react-hot-toast";
+import { nanoid } from "nanoid";
+import { useEffect, useState } from "react";
 
 export default function AuthModalPage() {
   const supabase = createClient();
   const searchParams = useSearchParams();
-  const refererCode = searchParams.get("r") || "";
-  async function getReferer(code: string) {
-      try {
-        return await fetch(`/api/refer?refererCode=${code}`)
-      } catch (error: any) {
-        console.error(error.message)
-      }
-  }
-  const referer = getReferer(refererCode)
+  const refererCode = searchParams.get("r");
+
   return (
     <div className="m-6 flex justify-center items-center">
       <Toaster />
@@ -63,7 +58,8 @@ export default function AuthModalPage() {
               redirectTo="/"
               view="sign_up"
               additionalData={{
-                referred_by: referer,
+                referred_by: refererCode,
+                referer_code: nanoid(9),
               }}
               localization={{
                 variables: {

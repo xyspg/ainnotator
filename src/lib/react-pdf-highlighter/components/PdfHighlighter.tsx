@@ -36,7 +36,7 @@ import getBoundingRect from "../lib/get-bounding-rect";
 import getClientRects from "../lib/get-client-rects";
 import { HighlightLayer } from "./HighlightLayer";
 
-import {Input, Pagination} from "@nextui-org/react";
+import { Input, Pagination } from "@nextui-org/react";
 
 export type T_ViewportHighlight<T_HT> = { position: Position } & T_HT;
 

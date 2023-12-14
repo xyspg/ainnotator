@@ -74,7 +74,7 @@ const config = {
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
         mono: ["var(--font-geist-mono)"],
-        display: ["var(--font-lexend)"]
+        display: ["var(--font-lexend)"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

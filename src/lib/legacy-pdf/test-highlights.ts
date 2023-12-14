@@ -1,36 +1,36 @@
 export const testHighlights = {
   "https://arxiv.org/pdf/1708.08021.pdf": [
     {
-      "content": {
-        "text": "We precisely model common JavaScript idioms"
+      content: {
+        text: "We precisely model common JavaScript idioms",
       },
-      "position": {
-        "boundingRect": {
-          "x1": 117.0546875,
-          "y1": 252.80474853515625,
-          "x2": 423.95306396484375,
-          "y2": 272.30474853515625,
-          "width": 809.9999999999999,
-          "height": 1200,
-          "pageNumber": 2
+      position: {
+        boundingRect: {
+          x1: 117.0546875,
+          y1: 252.80474853515625,
+          x2: 423.95306396484375,
+          y2: 272.30474853515625,
+          width: 809.9999999999999,
+          height: 1200,
+          pageNumber: 2,
         },
-        "rects": [
+        rects: [
           {
-            "x1": 117.0546875,
-            "y1": 252.80474853515625,
-            "x2": 423.95306396484375,
-            "y2": 272.30474853515625,
-            "width": 809.9999999999999,
-            "height": 1200,
-            "pageNumber": 2
-          }
+            x1: 117.0546875,
+            y1: 252.80474853515625,
+            x2: 423.95306396484375,
+            y2: 272.30474853515625,
+            width: 809.9999999999999,
+            height: 1200,
+            pageNumber: 2,
+          },
         ],
-        "pageNumber": 2
+        pageNumber: 2,
       },
-      "comment": {
-        "text": "The authors present the design and implementation of Flow, a fast and precise type checker for JavaScript, used at Facebook. They model common JavaScript idioms and use sophisticated type inference to find non-trivial bugs in code and provide code intelligence to editors without requiring significant rewriting or annotations from the developer. They also discuss the challenges and technical choices made to meet the demands of real-world JavaScript development."
+      comment: {
+        text: "The authors present the design and implementation of Flow, a fast and precise type checker for JavaScript, used at Facebook. They model common JavaScript idioms and use sophisticated type inference to find non-trivial bugs in code and provide code intelligence to editors without requiring significant rewriting or annotations from the developer. They also discuss the challenges and technical choices made to meet the demands of real-world JavaScript development.",
       },
-      "id": "1919810"
+      id: "1919810",
     },
     {
       content: {
@@ -40,27 +40,27 @@ export const testHighlights = {
         boundingRect: {
           height: 1200,
           width: 809.9999999999999,
-          x1:76.37115478515625,
+          x1: 76.37115478515625,
           x2: 733.6217041015625,
           y1: 968.8162231445312,
-          y2:1008.2372436523438,
+          y2: 1008.2372436523438,
         },
         pageNumber: 1,
         rects: [
           {
             height: 1200,
             width: 809.9999999999999,
-            x1:76.37115478515625,
+            x1: 76.37115478515625,
             x2: 733.6217041015625,
             y1: 968.8162231445312,
-            y2:1008.2372436523438,
-          }
-        ]
+            y2: 1008.2372436523438,
+          },
+        ],
       },
       comment: {
         text: "TESTING",
       },
-      id: "114514"
+      id: "114514",
     },
     {
       content: {

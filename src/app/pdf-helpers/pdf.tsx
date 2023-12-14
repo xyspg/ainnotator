@@ -18,8 +18,8 @@ import {
 } from "./react-pdf-highlighter";
 import Loading from "@/app/components/Loading";
 import { Sidebar } from "@/app/components/Sidebar";
-import toast, { Toaster } from 'react-hot-toast';
-import {Button, Card, CardBody } from "@nextui-org/react";
+import toast, { Toaster } from "react-hot-toast";
+import { Button, Card, CardBody } from "@nextui-org/react";
 
 import React, { useCallback, useEffect, useState, useRef } from "react";
 
@@ -33,38 +33,41 @@ import PDFHeader from "@/app/components/PDFHeader";
 const PRIMARY_PDF_URL = "https://r2.xyspg.moe/pdf/the-birds";
 const SECONDARY_PDF_URL = "https://arxiv.org/pdf/1604.02480.pdf";
 
-
 const HighlightPopup = ({
   comment,
 }: {
   comment: { text: string; emoji: string };
 }) =>
   comment.text ? (
-      <Card>
-        <CardBody className="max-w-md overflow-auto" >
-      {comment.emoji} {comment.text}
-        </CardBody>
-      </Card>
+    <Card>
+      <CardBody className="max-w-md overflow-auto">
+        {comment.emoji} {comment.text}
+      </CardBody>
+    </Card>
   ) : null;
 
-export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[] }) => {
+export const PDF = ({
+  pdf,
+  annotation,
+  filename,
+}: {
+  pdf: string;
+  annotation: IHighlight[];
+  filename: string;
+}) => {
   const url = pdf || PRIMARY_PDF_URL;
   const [highlights, setHighlights] = useState<IHighlight[]>(annotation || []);
-  const { completion, isLoading, complete } = useCompletion();
+  const { completion, isLoading, complete, error } = useCompletion();
   const [textSelection, setTextSelection] = useState<any>("");
   const [position, setPosition] = useState<Position>();
   console.log("highlights-->", highlights);
   console.log("position-->", position);
 
-  const pathname = usePathname()
-  const uuid = pathname.split("/")[2]
+  const pathname = usePathname();
+  const uuid = pathname.split("/")[2];
 
-
-
-
-
-  /*
-  * 保存批注
+  /**
+   * 保存批注
    */
   useEffect(() => {
     async function sendData() {
@@ -82,10 +85,19 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
     }
   }, [highlights]);
 
+  if (error) {
+    toast.error(JSON.parse(error.message).message)
+  }
+
+  /**
+   * 重置批注
+   */
   async function handleResetHighlights() {
-    const confirm = window.confirm("Are you sure you want to remove all annotations?")
+    const confirm = window.confirm(
+      "Are you sure you want to remove all annotations?",
+    );
     if (!confirm) {
-      return
+      return;
     }
     setHighlights([]);
     try {
@@ -156,7 +168,7 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
   };
 
   /*
-  * Add highlight with comment
+   * Add highlight with comment
    */
   function handleAddHighlight(position: Position, customText: string | null) {
     const highlight = {
@@ -164,7 +176,7 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
       position,
       comment: { text: customText || completion },
     };
-    console.log("highlight to add -->",highlight)
+    console.log("highlight to add -->", highlight);
     //@ts-ignore
     addHighlight(highlight);
   }
@@ -180,7 +192,7 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
       body: {
         data: {
           context,
-          "pdf_id": uuid
+          pdf_id: uuid,
         },
       },
     });
@@ -188,7 +200,7 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
 
   const handleRemove = (highlight: IHighlight) => {
     setHighlights(highlights.filter((h) => h.id !== highlight.id));
-  }
+  };
 
   const highlightTransform = (
     highlight: any,
@@ -237,19 +249,19 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
 
   const handleRender = async () => {
     if (!highlights) {
-      toast.error("You don't have annotations yet")
-      return
+      toast.error("You don't have annotations yet");
+      return;
     }
-    toast.promise(renderPdf(url, highlights), {
+    toast.promise(renderPdf(url, highlights, filename), {
       loading: "Rendering Your PDF",
       success: "PDF Rendered",
-      error: (err) => `There is an error rendering your PDF: ${err.toString()}`
-    })
-  }
+      error: (err) => `There is an error rendering your PDF: ${err.toString()}`,
+    });
+  };
 
   const handleAddAnnotation = (annotation: string | null) => {
     handleAddHighlight(position as Position, annotation);
-  }
+  };
 
   return (
     <>

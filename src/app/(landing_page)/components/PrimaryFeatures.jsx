@@ -1,37 +1,41 @@
-import { useEffect, useState } from 'react'
-import Image from 'next/image'
-import { Tab } from '@headlessui/react'
-import clsx from 'clsx'
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { Tab } from "@headlessui/react";
+import clsx from "clsx";
 import { useTranslations } from "next-intl";
 
-import { Container } from '../components/Container'
-import backgroundImage from '../images/background-features.jpg'
-import screenshotExpenses from '../images/screenshots/expenses.png'
-import screenshotPayroll from '../images/screenshots/primary-1.jpg'
-import screenshotReporting from '../images/screenshots/reporting.png'
-import screenshotVatReturns from '../images/screenshots/vat-returns.png'
+import { Container } from "../components/Container";
+import backgroundImage from "../images/background-features.jpg";
+import screenshotExpenses from "../images/screenshots/expenses.png";
+import screenshotPayroll from "../images/screenshots/primary-1.jpg";
+import screenshotReporting from "../images/screenshots/reporting.png";
+import screenshotVatReturns from "../images/screenshots/vat-returns.png";
 
-
-const featureImages = [screenshotPayroll, screenshotExpenses, screenshotVatReturns, screenshotReporting];
+const featureImages = [
+  screenshotPayroll,
+  screenshotExpenses,
+  screenshotVatReturns,
+  screenshotReporting,
+];
 
 export function PrimaryFeatures() {
-  let [tabOrientation, setTabOrientation] = useState('horizontal')
-  const t = useTranslations('PrimaryFeatures')
+  let [tabOrientation, setTabOrientation] = useState("horizontal");
+  const t = useTranslations("PrimaryFeatures");
 
   useEffect(() => {
-    let lgMediaQuery = window.matchMedia('(min-width: 1024px)')
+    let lgMediaQuery = window.matchMedia("(min-width: 1024px)");
 
     function onMediaQueryChange({ matches }) {
-      setTabOrientation(matches ? 'vertical' : 'horizontal')
+      setTabOrientation(matches ? "vertical" : "horizontal");
     }
 
-    onMediaQueryChange(lgMediaQuery)
-    lgMediaQuery.addEventListener('change', onMediaQueryChange)
+    onMediaQueryChange(lgMediaQuery);
+    lgMediaQuery.addEventListener("change", onMediaQueryChange);
 
     return () => {
-      lgMediaQuery.removeEventListener('change', onMediaQueryChange)
-    }
-  }, [])
+      lgMediaQuery.removeEventListener("change", onMediaQueryChange);
+    };
+  }, []);
 
   return (
     <section
@@ -50,31 +54,33 @@ export function PrimaryFeatures() {
       <Container className="relative">
         <div className="max-w-2xl md:mx-auto md:text-center xl:max-w-none">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl">
-            {t('title')}          </h2>
+            {t("title")}{" "}
+          </h2>
           <p className="mt-6 text-lg tracking-tight text-blue-100">
-            {t('subtitle')}          </p>
+            {t("subtitle")}{" "}
+          </p>
         </div>
         <Tab.Group
           as="div"
           className="mt-16 grid grid-cols-1 items-center gap-y-2 pt-10 sm:gap-y-6 md:mt-20 lg:grid-cols-12 lg:pt-0"
-          vertical={tabOrientation === 'vertical'}
+          vertical={tabOrientation === "vertical"}
         >
           {({ selectedIndex }) => (
             <>
               <div className="-mx-4 flex overflow-x-auto pb-4 sm:mx-0 sm:overflow-visible sm:pb-0 lg:col-span-5">
                 <Tab.List className="relative z-10 flex gap-x-4 whitespace-nowrap px-4 sm:mx-auto sm:px-0 lg:mx-0 lg:block lg:gap-x-0 lg:gap-y-1 lg:whitespace-normal">
-                  {t.raw('features').map((feature, featureIndex) => (
+                  {t.raw("features").map((feature, featureIndex) => (
                     <div
                       key={feature.title}
                       className={clsx(
-                        ' relative rounded-full py-1 px-4 lg:rounded-r-none lg:rounded-l-xl lg:p-6',
+                        " relative rounded-full py-1 px-4 lg:rounded-r-none lg:rounded-l-xl lg:p-6",
                       )}
                     >
                       <h3>
                         <Tab
                           className={clsx(
-                            'font-display text-lg',
-                              'text-blue-100  lg:text-white'
+                            "font-display text-lg",
+                            "text-blue-100  lg:text-white",
                           )}
                         >
                           <span className="absolute inset-0 rounded-full lg:rounded-r-none lg:rounded-l-xl" />
@@ -83,8 +89,8 @@ export function PrimaryFeatures() {
                       </h3>
                       <p
                         className={clsx(
-                          'mt-2 hidden text-sm lg:block',
-                            'text-blue-100'
+                          "mt-2 hidden text-sm lg:block",
+                          "text-blue-100",
                         )}
                       >
                         {feature.description}
@@ -94,7 +100,7 @@ export function PrimaryFeatures() {
                 </Tab.List>
               </div>
               <Tab.Panels className="lg:col-span-7">
-                {t.raw('features').map((feature, idx) => (
+                {t.raw("features").map((feature, idx) => (
                   <Tab.Panel key={feature.title} unmount={false}>
                     <div className="relative sm:px-6 lg:hidden">
                       <div className="absolute -inset-x-4 top-[-6.5rem] bottom-[-4.25rem] bg-white/10 ring-1 ring-inset ring-white/10 sm:inset-x-0 sm:rounded-t-xl" />
@@ -119,5 +125,5 @@ export function PrimaryFeatures() {
         </Tab.Group>
       </Container>
     </section>
-  )
+  );
 }

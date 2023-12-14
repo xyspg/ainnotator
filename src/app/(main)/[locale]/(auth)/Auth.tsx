@@ -6,8 +6,7 @@ import { SpeechBubble } from "react-kawaii";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useRouter } from "next/navigation";
-import {useUserStore} from "@/app/store";
-
+import { useUserStore } from "@/app/store";
 
 export const AuthModal = ({
   showModal,
@@ -16,18 +15,18 @@ export const AuthModal = ({
   showModal: boolean;
   setShowModal: () => void;
 }) => {
-  const supabase = createClient()
+  const supabase = createClient();
   const router = useRouter();
 
-  const updateUser = useUserStore((state) => state.updateUser)
+  const updateUser = useUserStore((state) => state.updateUser);
 
   supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN') {
-      setShowModal()
+    if (event === "SIGNED_IN") {
+      setShowModal();
       // updateUser(session?.user)
       router.refresh();
     }
-  })
+  });
   return (
     <>
       <Modal showModal={showModal} setShowModal={setShowModal}>

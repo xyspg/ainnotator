@@ -11,6 +11,8 @@ import "@mantine/dropzone/styles.css";
 import { MantineProvider } from "@mantine/core";
 import { Providers } from "@/app/providers";
 import { createClient } from "@/lib/supabase/server";
+import { Analytics } from '@vercel/analytics/react';
+
 
 import clsx from "clsx";
 import "./globals.css";
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
   description: "Annotate Any PDFs with AI",
 };
 
-export const revalidate = 0
+export const revalidate = 0;
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,13 +39,16 @@ export default async function RootLayout({
     locale: string;
   };
 }) {
-    const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
-    const { data: { user }, error } = await supabase.auth.getUser();
-    const { data: credit } = await supabase
-        .from("users")
-        .select("ainnotation_credit")
-        .eq("id", user?.id)
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  const { data: credit } = await supabase
+    .from("users")
+    .select("ainnotation_credit")
+    .eq("id", user?.id);
 
   return (
     <html lang={locale}>
@@ -64,9 +69,10 @@ export default async function RootLayout({
       >
         <Providers>
           <MantineProvider>
-            <Header user={user} credit={credit?.[0].ainnotation_credit}/>
+            <Header user={user} credit={credit?.[0].ainnotation_credit} />
             {children}
           </MantineProvider>
+          <Analytics />
         </Providers>
         <TailwindIndicator />
       </body>

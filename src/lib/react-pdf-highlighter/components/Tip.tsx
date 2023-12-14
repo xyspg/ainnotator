@@ -36,7 +36,7 @@ export class Tip extends Component<Props, State> {
 
     return (
       <div>
-         <button onClick={onConfirm}>Add annotation</button>
+        <button onClick={onConfirm}>Add annotation</button>
       </div>
     );
   }
