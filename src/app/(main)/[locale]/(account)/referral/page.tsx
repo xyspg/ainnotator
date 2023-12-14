@@ -38,7 +38,7 @@ export default async function Page() {
   const { data: spending, error: spendingError } = await supabase
     .from("orders")
     .select("real_payment_amount")
-    .in("user_id", data?.map((referral) => referral.referee_id))
+    .in("user_id", data!.map((referral) => referral.referee_id))
     .eq("status", "completed");
 
   const totalRefereeSpending = spending?.reduce(
@@ -70,7 +70,7 @@ export default async function Page() {
       <div className="">
         <h2>You have already invited {refereeCount} users.</h2>
         <p className="text-sm">
-          {refereeCount * 50} Free Ainnotations Received (Maximum 1000)
+          {refereeCount! * 50} Free Ainnotations Received (Maximum 1000)
         </p>
         <p className="text-sm">
           Earn 20% cashback when your friends purchases. Currently $

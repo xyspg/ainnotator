@@ -11,8 +11,6 @@ import { Input } from "@/app/components/ui/input";
 export default function Uploader() {
   const [fileUUID, setFileUUID] = useState("");
   const [loading, setLoading] = useState(false);
-  const apiKey = useOpenAIKeyStore((state) => state.apiKey);
-  console.log("user api key", apiKey);
 
   const router = useRouter();
   const t = useTranslations("Hero");

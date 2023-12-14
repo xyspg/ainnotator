@@ -18,7 +18,6 @@ export const AuthModal = ({
   const supabase = createClient();
   const router = useRouter();
 
-  const updateUser = useUserStore((state) => state.updateUser);
 
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
