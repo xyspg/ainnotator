@@ -1,8 +1,12 @@
-import clsx from 'clsx'
-import React from 'react'
-
-import { Button } from '../components/Button'
-import { Container } from '../components/Container'
+"use client";
+import clsx from "clsx";
+import React, { useState } from "react";
+import { Button } from "../components/Button";
+import { Container } from "../components/Container";
+import PaymentDialog from "@/app/(main)/[locale]/pricing/PaymentDialog";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { PRODUCTS } from "@/lib/constant";
 
 function SwirlyDoodle({ className }) {
   return (
@@ -18,7 +22,7 @@ function SwirlyDoodle({ className }) {
         d="M240.172 22.994c-8.007 1.246-15.477 2.23-31.26 4.114-18.506 2.21-26.323 2.977-34.487 3.386-2.971.149-3.727.324-6.566 1.523-15.124 6.388-43.775 9.404-69.425 7.31-26.207-2.14-50.986-7.103-78-15.624C10.912 20.7.988 16.143.734 14.657c-.066-.381.043-.344 1.324.456 10.423 6.506 49.649 16.322 77.8 19.468 23.708 2.65 38.249 2.95 55.821 1.156 9.407-.962 24.451-3.773 25.101-4.692.074-.104.053-.155-.058-.135-1.062.195-13.863-.271-18.848-.687-16.681-1.389-28.722-4.345-38.142-9.364-15.294-8.15-7.298-19.232 14.802-20.514 16.095-.934 32.793 1.517 47.423 6.96 13.524 5.033 17.942 12.326 11.463 18.922l-.859.874.697-.006c2.681-.026 15.304-1.302 29.208-2.953 25.845-3.07 35.659-4.519 54.027-7.978 9.863-1.858 11.021-2.048 13.055-2.145a61.901 61.901 0 0 0 4.506-.417c1.891-.259 2.151-.267 1.543-.047-.402.145-2.33.913-4.285 1.707-4.635 1.882-5.202 2.07-8.736 2.903-3.414.805-19.773 3.797-26.404 4.829Zm40.321-9.93c.1-.066.231-.085.29-.041.059.043-.024.096-.183.119-.177.024-.219-.007-.107-.079ZM172.299 26.22c9.364-6.058 5.161-12.039-12.304-17.51-11.656-3.653-23.145-5.47-35.243-5.576-22.552-.198-33.577 7.462-21.321 14.814 12.012 7.205 32.994 10.557 61.531 9.831 4.563-.116 5.372-.288 7.337-1.559Z"
       />
     </svg>
-  )
+  );
 }
 
 function CheckIcon({ className }) {
@@ -26,8 +30,8 @@ function CheckIcon({ className }) {
     <svg
       aria-hidden="true"
       className={clsx(
-        'h-6 w-6 flex-none fill-current stroke-current',
-        className
+        "h-6 w-6 flex-none fill-current stroke-current",
+        className,
       )}
     >
       <path
@@ -44,90 +48,183 @@ function CheckIcon({ className }) {
         strokeLinejoin="round"
       />
     </svg>
-  )
+  );
 }
 
-function Plan({ name, price, discountedPrice, description, href, features, featured = false, tag, tagColor = 'green' }) {
-
-
-    return (
-      <section
+function Plan(
+  {
+    name,
+    price,
+    discountedPrice,
+    description,
+    href,
+    features,
+    featured = false,
+    tag,
+    tagColor = "green",
+    target = "_self",
+    onButtonClick,
+  },
+  ...props
+) {
+  return (
+    <section
+      {...props}
+      className={clsx(
+        "flex flex-col rounded-3xl px-6 sm:px-8 relative",
+        featured ? "order-first bg-blue-600 py-8 lg:order-none" : "lg:py-8",
+      )}
+    >
+      <h3 className="mt-5 font-display text-lg text-white">{name}</h3>
+      <p
         className={clsx(
-          "flex flex-col rounded-3xl px-6 sm:px-8 relative",
-          featured ? "order-first bg-blue-600 py-8 lg:order-none" : "lg:py-8",
+          "mt-2 text-base",
+          featured ? "text-white" : "text-slate-400",
         )}
-      >
-        <h3 className="mt-5 font-display text-lg text-white">{name}</h3>
+        dangerouslySetInnerHTML={{ __html: description }}
+      ></p>
+      <p className="order-first font-display text-5xl font-light tracking-tight text-white">
+        {discountedPrice ? (
+          <span>
+            <span className="text-xl font-medium text-slate-200 line-through">
+              {price}
+            </span>{" "}
+            {discountedPrice}
+          </span>
+        ) : (
+          price
+        )}
+      </p>
+      {tag && (
         <p
           className={clsx(
-            "mt-2 text-base",
-            featured ? "text-white" : "text-slate-400",
+            "absolute right-10 top-10 rounded-full",
+            `bg-green-400/10 px-2 py-1 text-xs font-semibold leading-5`,
+            `text-green-400`,
           )}
-          dangerouslySetInnerHTML={{ __html: description }}
-        ></p>
-        <p className="order-first font-display text-5xl font-light tracking-tight text-white">
-          {discountedPrice ? (
-            <span>
-              <span className="text-xl font-medium text-slate-200 line-through">
-                {price}
-              </span>{" "}
-              {discountedPrice}
-            </span>
-          ) : (
-            price
-          )}
+        >
+          {tag}
         </p>
-        {tag && (
-            <p className={clsx('absolute right-10 top-10 rounded-full', `bg-${tagColor}-400/10 px-2 py-1 text-xs font-semibold leading-5`, `text-${tagColor}-400`)}>{tag}</p>
+      )}
+      <ul
+        role="list"
+        className={clsx(
+          "order-last mt-10 flex flex-col gap-y-3 text-sm",
+          featured ? "text-white" : "text-slate-200",
         )}
-        <ul
-          role="list"
-          className={clsx(
-            "order-last mt-10 flex flex-col gap-y-3 text-sm",
-            featured ? "text-white" : "text-slate-200",
-          )}
-        >
-          {features.map((feature) => (
-            <li key={feature} className="flex">
-              <CheckIcon
-                className={featured ? "text-white" : "text-slate-400"}
-              />
-              <span className="ml-4">{feature}</span>
-            </li>
-          ))}
-        </ul>
-        <Button
-          href={href}
-          variant={featured ? "solid" : "outline"}
-          color="white"
-          className="mt-8"
-          aria-label={`Get started with the ${name} plan for ${price}`}
-        >
-          Get started
-        </Button>
-      </section>
-    );
+      >
+        {features.map((feature) => (
+          <li key={feature} className="flex">
+            <CheckIcon className={featured ? "text-white" : "text-slate-400"} />
+            <span className="ml-4">{feature}</span>
+          </li>
+        ))}
+      </ul>
+      <Button
+        href={href}
+        target={target}
+        onClick={onButtonClick}
+        variant={featured ? "solid" : "outline"}
+        color="white"
+        className="mt-8"
+        aria-label={`Get started with the ${name} plan for ${price}`}
+      >
+        Get started
+      </Button>
+    </section>
+  );
 }
 
-export function Pricing() {
+export function Pricing({ user }) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
+  const router = useRouter();
+  const checkoutUrl500 = "https://mbd.pub/o/bread/ZZeWkp1q";
+  const checkoutUrl2500 = "https://mbd.pub/o/bread/ZZeak5tt";
+
+  // TODO: Only able to check out after login
+
+  function generateOrderId(url) {
+    return Math.random().toString(36).slice(2, 9);
+  }
+
+  async function checkOut(amount) {
+    const url = amount === 500 ? checkoutUrl500 : checkoutUrl2500;
+    const thisProduct = PRODUCTS.find((p) => p.amount === amount);
+    setCurrentProduct(thisProduct);
+    // 生成订单id
+    const orderId = generateOrderId(url);
+    setCurrentOrderId(orderId);
+
+    // TODO: Save orderId to database
+    try {
+      await fetch("/api/order/add", {
+        method: "POST",
+        body: JSON.stringify({
+          orderId,
+          userId: user?.id,
+          email: user?.email,
+          product: thisProduct,
+        }),
+      }).then((res) => res.json());
+    } catch (e) {
+      toast.error(e.toString());
+    }
+
+    const checkoutUrl = `${url}?out_order_id=${orderId}`;
+    setModalOpen(true);
+    window.open(checkoutUrl, "_blank");
+  }
+
+  async function handleComplete() {
+    setModalOpen(false);
+    const response = await fetch("/api/order", {
+      method: "POST",
+      body: JSON.stringify({
+        id: currentOrderId,
+        userId: user?.id,
+        urlkey: currentProduct.url.split("bread/")[1],
+      }),
+    }).then((res) => res.json());
+
+    if (response.code === 200) {
+      toast.success("购买成功");
+      router.push("/");
+    } else {
+      const error = response.message;
+      toast.error(error);
+    }
+  }
+
   return (
     <section
       id="pricing"
       aria-label="Pricing"
       className="bg-slate-900 py-20 sm:py-32"
     >
+      <Toaster />
+      {modalOpen && (
+        <PaymentDialog
+          onClose={() => {
+            setModalOpen(false);
+          }}
+          onComplete={handleComplete}
+        />
+      )}
       <Container>
         <div className="md:text-center">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
-              如有需要请{' '}
+            如有需要请{" "}
             <span className="relative whitespace-nowrap">
               <SwirlyDoodle className="absolute top-1/2 left-0 h-[1em] w-full fill-blue-400" />
               <span className="relative text-blue-400">购买次数</span>
-            </span>{' '}
-           哦，感谢您的支持！
+            </span>{" "}
+            哦，感谢您的支持！
           </h2>
           <p className="mt-4 text-lg text-slate-400">
-            AInnotator 需要负担高昂的服务器、云存储 成本，LLM API 成本，如果 AInnotator 有帮助到您，请考虑付费使用。
+            AInnotator 需要负担高昂的服务器、云存储 成本，LLM API 成本，如果
+            AInnotator 有帮助到您，请考虑付费使用。
           </p>
         </div>
         <div className="-mx-4 mt-16 grid max-w-2xl grid-cols-1 gap-y-10 sm:mx-auto lg:-mx-8 lg:max-w-none lg:grid-cols-3 xl:mx-0 xl:gap-x-8">
@@ -135,50 +232,52 @@ export function Pricing() {
             name="Free"
             price="$0"
             description="注册即可获赠 50 次免费次数"
-            href="/register"
+            href="/signup"
             features={[
-              'Send 10 quotes and invoices',
-              'Connect up to 2 bank accounts',
-              'Track up to 15 expenses per month',
-              'Manual payroll support',
-              'Export up to 3 reports',
+              "Send 10 quotes and invoices",
+              "Connect up to 2 bank accounts",
+              "Track up to 15 expenses per month",
+              "Manual payroll support",
+              "Export up to 3 reports",
             ]}
           />
           <Plan
             name="500 AInnotations"
             discountedPrice="$4.9"
             price="$15"
-            description="限时黑五折扣：50% OFF"
-            href="/register"
-            tag={'热销'}
+            description="限时圣诞折扣：50% OFF"
+            target="_blank"
+            tag={"热销"}
+            onButtonClick={() => checkOut(500)}
             features={[
-              'Send 25 quotes and invoices',
-              'Connect up to 5 bank accounts',
-              'Track up to 50 expenses per month',
-              'Automated payroll support',
-              'Export up to 12 reports',
-              'Bulk reconcile transactions',
-              'Track in multiple currencies',
+              "Send 25 quotes and invoices",
+              "Connect up to 5 bank accounts",
+              "Track up to 50 expenses per month",
+              "Automated payroll support",
+              "Export up to 12 reports",
+              "Bulk reconcile transactions",
+              "Track in multiple currencies",
             ]}
           />
           <Plan
-              featured
+            featured
             name="2500 AInnotations"
             price="$40"
             discountedPrice="$19.8"
             description="限时黑五折扣：50% OFF"
-              tag={'性价比最高'}
-            href="/register"
+            tag={"性价比最高"}
+            target={"_blank"}
+            onButtonClick={() => checkOut(2500)}
             features={[
-              'Send unlimited quotes and invoices',
-              'Connect up to 15 bank accounts',
-              'Track up to 200 expenses per month',
-              'Automated payroll support',
-              'Export up to 25 reports, including TPS',
+              "Send unlimited quotes and invoices",
+              "Connect up to 15 bank accounts",
+              "Track up to 200 expenses per month",
+              "Automated payroll support",
+              "Export up to 25 reports, including TPS",
             ]}
           />
         </div>
       </Container>
     </section>
-  )
+  );
 }

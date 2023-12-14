@@ -5,10 +5,14 @@ import { Group, rem, Text } from "@mantine/core";
 import { IconFile, IconUpload, IconX } from "@tabler/icons-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslations } from "next-intl";
+import { useOpenAIKeyStore } from "@/app/store";
+import { Input } from "@/app/components/ui/input";
 
 export default function Uploader() {
   const [fileUUID, setFileUUID] = useState("");
   const [loading, setLoading] = useState(false);
+  const apiKey = useOpenAIKeyStore((state) => state.apiKey);
+  console.log('user api key', apiKey)
 
   const router = useRouter();
   const t = useTranslations("Hero");
@@ -41,6 +45,7 @@ export default function Uploader() {
 
   };
 
+
   useEffect(() => {
     if (fileUUID) {
       router.push(`/pdf/${fileUUID}`);
@@ -50,6 +55,15 @@ export default function Uploader() {
   return (
     <>
       <Toaster />
+      <Input
+          className='py-2'
+        placeholder="OpenAI API Key"
+        value={apiKey}
+        onChange={(event) => {
+          useOpenAIKeyStore.setState({ apiKey: event.currentTarget.value });
+        }}
+
+        />
       <Dropzone
         onDrop={(file) => {
           handleUpload(file);

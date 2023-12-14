@@ -1,18 +1,6 @@
-import {
-  S3Client,
-  ListBucketsCommand,
-  ListObjectsV2Command,
-  GetObjectCommand,
-  PutObjectCommand,
-} from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
-import {
-  createServerClient,
-  type CookieOptions,
-  serialize,
-} from "@supabase/ssr";
-
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from "@/lib/supabase/server";
 
 import { S3 } from "../s3";
 import { regularRatelimit } from "@/lib/upstash";
@@ -28,7 +16,7 @@ export async function POST(req: Request): Promise<Response> {
   //@ts-expect-error
   const filename = file.name;
   const cookieStore = cookies();
-  const supabase = createClient(cookieStore)
+  const supabase = createClient(cookieStore);
 
   const { data: userData, error } = await supabase.auth.getUser();
 
@@ -50,17 +38,25 @@ export async function POST(req: Request): Promise<Response> {
     return new Response("No file", { status: 400 });
   }
   const userId = user.id;
-  const { success, remaining } = await regularRatelimit.limit(
-    `fileUpload:${userId}`,
-  );
 
-  if (!success) {
-    return new Response(
-      JSON.stringify({
-        message: "You have being too frequent. Please try again later.",
-      }),
-      { status: 429 },
+  /*
+   * Rate Limiting
+   * Not enabled in localhost
+   */
+
+  if (!isDev()) {
+    const { success, remaining } = await regularRatelimit.limit(
+      `fileUpload:${userId}`,
     );
+
+    if (!success) {
+      return new Response(
+        JSON.stringify({
+          message: "You have being too frequent. Please try again later.",
+        }),
+        { status: 429 },
+      );
+    }
   }
 
   const uuid = crypto.randomUUID();
@@ -71,7 +67,6 @@ export async function POST(req: Request): Promise<Response> {
     Bucket,
     Key: `pdf/${uuid}`,
     Body,
-    ContentLength: Body.length,
   });
 
   if (Body.length > 25 * 1024 ** 2) {
@@ -83,6 +78,7 @@ export async function POST(req: Request): Promise<Response> {
   } catch (err: any) {
     return new Response(err.message, { status: 500 });
   }
+  console.log(user.email);
 
   const { error: insertionError } = await supabase.from("uploads").insert({
     user_id: userId,

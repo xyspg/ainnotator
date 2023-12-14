@@ -63,6 +63,9 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
 
 
 
+  /*
+  * 保存批注
+   */
   useEffect(() => {
     async function sendData() {
       try {
@@ -80,6 +83,11 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
   }, [highlights]);
 
   async function handleResetHighlights() {
+    const confirm = window.confirm("Are you sure you want to remove all annotations?")
+    if (!confirm) {
+      return
+    }
+    setHighlights([]);
     try {
       await axios.post("/api/annotation", {
         pdfId: uuid,
@@ -91,7 +99,6 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
     }
   }
   const resetHighlights = () => {
-    setHighlights([]);
     handleResetHighlights();
   };
 
@@ -148,12 +155,16 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
     );
   };
 
-  function handleAddHighlight(position: Position) {
+  /*
+  * Add highlight with comment
+   */
+  function handleAddHighlight(position: Position, customText: string | null) {
     const highlight = {
       content: textSelection,
       position,
-      comment: { text: completion },
+      comment: { text: customText || completion },
     };
+    console.log("highlight to add -->",highlight)
     //@ts-ignore
     addHighlight(highlight);
   }
@@ -236,6 +247,10 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
     })
   }
 
+  const handleAddAnnotation = (annotation: string | null) => {
+    handleAddHighlight(position as Position, annotation);
+  }
+
   return (
     <>
       <Toaster />
@@ -248,9 +263,7 @@ export const PDF = ({ pdf, annotation }: { pdf: string, annotation: IHighlight[]
           completion={completion}
           loading={isLoading}
           onRender={handleRender}
-          onAddAnnotation={() => {
-            handleAddHighlight(position as Position);
-          }}
+          onAddAnnotation={handleAddAnnotation}
           onRemove={handleRemove}
         />
         <div

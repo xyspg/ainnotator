@@ -11,6 +11,10 @@ import { Testimonials } from "@/app/(landing_page)/components/Testimonials"
 import { Pricing } from "@/app/(landing_page)/components/Pricing"
 import { Faqs } from "@/app/(landing_page)/components/Faqs"
 import { Footer } from "@/app/(landing_page)/components/Footer"
+
+
+import { useUserStore } from "@/app/store";
+
 export default function Home() {
   return (
     <main>

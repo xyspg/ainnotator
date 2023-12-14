@@ -6,7 +6,8 @@ import { SpeechBubble } from "react-kawaii";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useRouter } from "next/navigation";
-import {useAnalytics} from "@/lib/hooks/use-analytics";
+import {useUserStore} from "@/app/store";
+
 
 export const AuthModal = ({
   showModal,
@@ -17,15 +18,13 @@ export const AuthModal = ({
 }) => {
   const supabase = createClient()
   const router = useRouter();
-  const { analytics } = useAnalytics()
+
+  const updateUser = useUserStore((state) => state.updateUser)
 
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_IN') {
       setShowModal()
-      analytics.track("Signed In")
-      analytics.identify(session?.user?.id, {
-        email: session?.user?.email,
-      })
+      // updateUser(session?.user)
       router.refresh();
     }
   })

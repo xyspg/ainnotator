@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   description: "Annotate Any PDFs with AI",
 };
 
+export const revalidate = 0
+
 const inter = Inter({ subsets: ["latin"] });
 
 const lexend = Lexend({ subsets: ["latin"] });
@@ -37,8 +39,11 @@ export default async function RootLayout({
 }) {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
-    const { data: user, error } = await supabase.auth.getUser();
-
+    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: credit } = await supabase
+        .from("users")
+        .select("ainnotation_credit")
+        .eq("id", user?.id)
 
   return (
     <html lang={locale}>
@@ -59,7 +64,7 @@ export default async function RootLayout({
       >
         <Providers>
           <MantineProvider>
-            <Header user={user.user}/>
+            <Header user={user} credit={credit?.[0].ainnotation_credit}/>
             {children}
           </MantineProvider>
         </Providers>

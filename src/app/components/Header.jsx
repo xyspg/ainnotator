@@ -5,7 +5,6 @@ import { Popover, Transition } from "@headlessui/react";
 import clsx from "clsx";
 
 import { Button } from "../(landing_page)/components/Button";
-import { useAnalytics } from "@/lib/hooks/use-analytics";
 import { Container } from "../(landing_page)/components/Container";
 import { Logo } from "../(landing_page)/components/Logo";
 import { NavLink } from "../(landing_page)/components/NavLink";
@@ -14,6 +13,8 @@ import { useState } from "react";
 import { AuthModal } from "@/app/(main)/[locale]/(auth)/Auth";
 import { createClient } from "@/lib/supabase/client";
 import {useRouter} from "next/navigation";
+import { FaCoins } from "react-icons/fa";
+import {CreditIndicator} from "@/app/components/credit-indicator";
 
 const supabase = createClient();
 
@@ -98,10 +99,9 @@ function MobileNavigation() {
   );
 }
 
-export function Header({ user }) {
+export function Header({ user, credit }) {
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter()
-  const { analytics } = useAnalytics();
   return (
     <>
       <header className="py-10">

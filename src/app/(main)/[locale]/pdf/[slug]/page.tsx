@@ -1,4 +1,4 @@
-import { PDF } from "@/app/app/pdf";
+import { PDF } from "@/app/pdf-helpers/pdf";
 import { notFound } from "next/navigation";
 
 import { GetObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";

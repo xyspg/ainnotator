@@ -188,4 +188,6 @@ with check (((auth.jwt() ->> 'email'::text) = (email)::text));
 
 CREATE TRIGGER "onSignUp" AFTER INSERT ON public.users FOR EACH ROW EXECUTE FUNCTION supabase_functions.http_request('http://localhost:3000/api/refer', 'POST', '{"Content-type":"application/json"}', '{}', '1000');
 
-
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
