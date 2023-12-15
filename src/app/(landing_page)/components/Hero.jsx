@@ -105,10 +105,9 @@ export function Hero() {
         <AlertDialog defaultOpen={true}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle className="text-red-500">DEVELOPER PREVIEW VERSION</AlertDialogTitle>
+                    <AlertDialogTitle className="text-red-500">欢迎来到删档内测</AlertDialogTitle>
                     <AlertDialogDescription className=''>
-                        VERY UNSTABLE! USE AT YOU OWN RISK!
-                        PLEASE REPORT ANY BUGS TO ME
+                        求你了，来测
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
