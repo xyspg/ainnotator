@@ -20,6 +20,7 @@ import {
     AlertDialogHeader, AlertDialogTitle,
     AlertDialogTrigger
 } from "@/app/components/ui/alert-dialog";
+import {isDev} from "@/lib/utils";
 
 export function Hero() {
   const t = useTranslations("Hero");
@@ -100,6 +101,7 @@ export function Hero() {
       </div>
 
       */}
+        {!isDev() && (
         <AlertDialog defaultOpen={true}>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -114,6 +116,7 @@ export function Hero() {
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
+            )}
 
 
     </Container>
