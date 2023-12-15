@@ -37,6 +37,7 @@ import getClientRects from "../lib/get-client-rects";
 import { HighlightLayer } from "./HighlightLayer";
 
 import { Input, Pagination } from "@nextui-org/react";
+import pdf from "@/app/pdf-helpers/pdf";
 
 export type T_ViewportHighlight<T_HT> = { position: Position } & T_HT;
 
@@ -514,7 +515,13 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       pages = [1, pageNum - 1, pageNum, pageNum + 1];
     }
     for (let i = 0; i < pages.length; i++) {
-      const page = await pdfDocument.getPage(pages[i]);
+      let page;
+      try {
+        page = await pdfDocument.getPage(pages[i]);
+      } catch (e) {
+        console.error(e)
+        continue;
+      }
       text += `\npage: ${pages[i]}\n`;
       const pageText = await page.getTextContent();
       //@ts-ignore
