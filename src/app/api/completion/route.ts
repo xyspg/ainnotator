@@ -137,7 +137,7 @@ export async function POST(req: Request) {
   /** Use OpenAI
    *
    */
-  async function useOpenAI() {
+  async function OpenAICompletion() {
     return openai.chat.completions.create({
       model,
       stream: true,
@@ -159,7 +159,7 @@ export async function POST(req: Request) {
   /** Use Gemini (currently free, so it will be first choice)
    *
    */
-  async function useGemini() {
+  async function GeminiCompletion() {
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const promptForGemini = `$Sentence: ${prompt}\n $Context Section: ${context}\n $Comments:`;
@@ -172,12 +172,12 @@ export async function POST(req: Request) {
    * If Gemini fails, use OpenAI
    */
   try {
-    const response = await useGemini();
+    const response = await GeminiCompletion();
     await insertRecord(response, "gemini-pro");
     return new Response(response, { status: 200 });
   } catch (e) {
     console.error(e);
-    const openAIResponse = await useOpenAI();
+    const openAIResponse = await OpenAICompletion();
 
     // after the completion, save the response to the database
     const stream = OpenAIStream(openAIResponse, {
