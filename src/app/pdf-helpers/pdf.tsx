@@ -60,9 +60,6 @@ export const PDF = ({
   const { completion, isLoading, complete, error } = useCompletion();
   const [textSelection, setTextSelection] = useState<any>("");
   const [position, setPosition] = useState<Position>();
-  console.log("highlights-->", highlights);
-  console.log("position-->", position);
-
   const pathname = usePathname();
   const uuid = pathname.split("/")[2];
 
@@ -121,7 +118,6 @@ export const PDF = ({
   const scrollToHighlightFromHash = () => {
     const highlight = getHighlightById(parseIdFromHash());
     if (highlight) {
-      console.log("highlight to scorll", highlight);
       scrollViewerTo(highlight);
     }
   };
@@ -187,7 +183,6 @@ export const PDF = ({
       position,
       comment: { text: customText || completion },
     };
-    console.log("highlight to add -->", highlight);
     //@ts-ignore
     addHighlight(highlight);
   }
