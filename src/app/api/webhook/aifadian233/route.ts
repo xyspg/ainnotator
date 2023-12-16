@@ -8,13 +8,6 @@ export async function POST(req: Request) {
   console.log(body);
 
   const { ec, em, data } = body;
-  const { type, order } = data;
-  const {
-    out_trade_no, plan_title, user_private_id, user_id, plan_id,
-    title, month, total_amount, show_amount, status, remark,
-    redeem_id, product_type, discount, sku_detail,
-    address_person, address_phone, address_address
-  } = order;
 
 
   // save to database
@@ -26,10 +19,9 @@ export async function POST(req: Request) {
   const { error } = await supabase
       .from('webhook_aifadian')
       .insert([{
-        ec, em, type, out_trade_no, plan_title, user_private_id, user_id, plan_id,
-        title, month, total_amount, show_amount, status, remark,
-        redeem_id, product_type, discount, sku_detail,
-        address_person, address_phone, address_address
+        code: ec,
+        message: em,
+        data
       }]);
 
   if (error) {
