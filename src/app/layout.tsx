@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import { Viewport } from "next";
 
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
@@ -25,6 +26,10 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 0;
+
+export const viewport: Viewport = {
+  maximumScale: 1,
+}
 
 const inter = Inter({ subsets: ["latin"] });
 

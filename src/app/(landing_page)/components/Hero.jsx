@@ -14,16 +14,29 @@ import logoTuple from "../images/logos/tuple.svg";
 
 import { Auth } from "@/app/(main)/[locale]/(auth)/Auth";
 import {
-    AlertDialog,
-    AlertDialogAction, AlertDialogCancel,
-    AlertDialogContent, AlertDialogDescription, AlertDialogFooter,
-    AlertDialogHeader, AlertDialogTitle,
-    AlertDialogTrigger
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/app/components/ui/alert-dialog";
-import {isDev} from "@/lib/utils";
+import { isDev } from "@/lib/utils";
+import { useMetaDataStore } from "@/app/store";
+import { ClientOnly } from "@/lib/clientOnly";
 
 export function Hero() {
   const t = useTranslations("Hero");
+  const { metaData, setMetaData } = useMetaDataStore();
+  const guideShown = metaData.guide_shown;
+
+  const handleModalClose = () => {
+    setMetaData({ ...metaData, guide_shown: true });
+  };
+
   return (
     <Container className="pt-20 pb-16 text-center lg:pt-32">
       <h1 className="mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight text-slate-900 sm:text-7xl">
@@ -101,23 +114,25 @@ export function Hero() {
       </div>
 
       */}
-        {!isDev() && (
-        <AlertDialog defaultOpen={true}>
+      <ClientOnly>
+        {!guideShown && (
+          <AlertDialog defaultOpen={true} onOpenChange={handleModalClose}>
             <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle className="text-red-500">欢迎来到删档内测</AlertDialogTitle>
-                    <AlertDialogDescription className=''>
-                        求你了，来测
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogAction>Continue</AlertDialogAction>
-                </AlertDialogFooter>
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-red-500">
+                  欢迎来到删档内测
+                </AlertDialogTitle>
+                <AlertDialogDescription className="">
+                  求你了，来测
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogAction>Continue</AlertDialogAction>
+              </AlertDialogFooter>
             </AlertDialogContent>
-        </AlertDialog>
-            )}
-
-
+          </AlertDialog>
+        )}
+      </ClientOnly>
     </Container>
   );
 }

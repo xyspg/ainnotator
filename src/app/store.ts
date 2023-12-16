@@ -14,16 +14,16 @@ export const useOpenAIKeyStore = create(
       setKey: (apiKey: string) => set(() => ({ apiKey })),
     }),
     {
-      name: "user-openai-key",
+      name: "user-settings",
       storage: createJSONStorage(() => localStorage),
     },
   ),
 );
 
-export const metaDataStore = create(
+export const useMetaDataStore = create(
   persist(
     (set, get) => ({
-      metaData: { guide_shown: false },
+      metaData: { guide_shown: false, version: '0.0.1' },
       setMetaData: (metaData: any) => set(() => ({ metaData })),
     }),
     {
