@@ -15,7 +15,8 @@ import { Footer } from "@/app/(landing_page)/components/Footer";
 import { useUserStore } from "@/app/store";
 
 export default function Home() {
-  return (
+
+    return (
     <main>
       <main>
         <Hero />

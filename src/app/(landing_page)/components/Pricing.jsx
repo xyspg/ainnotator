@@ -174,21 +174,15 @@ export function Pricing({ user }) {
       toast.error(e.toString());
     }
 
-    const checkoutUrl = `${url}?out_order_id=${orderId}`;
+    // custom_order_id
+    const checkoutUrl = `${url}&custom_order_id=${orderId}`;
     setModalOpen(true);
     window.open(checkoutUrl, "_blank");
   }
 
   async function handleComplete() {
     setModalOpen(false);
-    const response = await fetch("/api/order", {
-      method: "POST",
-      body: JSON.stringify({
-        id: currentOrderId,
-        userId: user?.id,
-        urlkey: currentProduct.url.split("bread/")[1],
-      }),
-    }).then((res) => res.json());
+    const response = await fetch(`/api/order?order_id=${currentOrderId}`).then((res) => res.json());
 
     if (response.code === 200) {
       toast.success("购买成功");

@@ -8,11 +8,19 @@ export default async function middleware(request: NextRequest) {
   // Step 1: Use the incoming request (example)
   const defaultLocale = request.headers.get("x-default-locale") || "en";
   const { supabase } = createClient(request);
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const protectedPaths = ['/orders','/referral','/settings','/history']
+  if (protectedPaths.includes(request.nextUrl.pathname) && !user) {
+    return Response.redirect(new URL(`/signup?redirect=${encodeURIComponent(request.nextUrl.pathname)}`, request.url));
+  }
+
   const handleI18nRouting = createIntlMiddleware({
     locales: ["en", "zh-CN"],
     defaultLocale: "en",
     localePrefix: "never",
   });
+
 
   const response = handleI18nRouting(request);
   response.headers.set(
