@@ -3,7 +3,7 @@
  */
 
 export async function POST(req: Request) {
-  const body = req.body;
+  const body = await req.json();
   console.log(body);
 
   const resp = { ec: 200, em: "" }
