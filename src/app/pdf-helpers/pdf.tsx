@@ -126,6 +126,9 @@ export const PDF = ({
     }
   };
 
+  /**
+   * 重置hash
+   */
   useEffect(() => {
     window.addEventListener("hashchange", scrollToHighlightFromHash, false);
     return () => {
@@ -148,6 +151,12 @@ export const PDF = ({
     setHighlights([{ ...highlight, id: getNextId() }, ...highlights]);
   };
 
+  /**
+   * 更新批注
+   * @param highlightId
+   * @param position
+   * @param content
+   */
   const updateHighlight = (
     highlightId: string,
     position: Object,
@@ -167,8 +176,10 @@ export const PDF = ({
     );
   };
 
-  /*
-   * Add highlight with comment
+  /**
+   * 添加批注
+   * @param position
+   * @param customText
    */
   function handleAddHighlight(position: Position, customText: string | null) {
     const highlight = {
@@ -181,6 +192,12 @@ export const PDF = ({
     addHighlight(highlight);
   }
 
+  /**
+   * 选中文本后
+   * @param position
+   * @param context
+   * @param content
+   */
   const onSelectionFinished = (
     position: Position,
     context: string,
@@ -198,10 +215,24 @@ export const PDF = ({
     });
   };
 
+  /**
+   * 移除批注
+   * @param highlight
+   */
   const handleRemove = (highlight: IHighlight) => {
     setHighlights(highlights.filter((h) => h.id !== highlight.id));
   };
 
+  /**
+   * 批注转换
+   * @param highlight
+   * @param index
+   * @param setTip
+   * @param hideTip
+   * @param viewportToScaled
+   * @param screenshot
+   * @param isScrolledTo
+   */
   const highlightTransform = (
     highlight: any,
     index: number,

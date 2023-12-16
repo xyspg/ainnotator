@@ -11,6 +11,8 @@ import {
 } from "@/app/components/ui/table";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
+import {Input} from "@/app/components/ui/input";
+import {QueryOrder} from "@/app/(main)/[locale]/(account)/orders/orders-client";
 
 export default async function Page() {
   const cookieStore = cookies();
@@ -29,7 +31,7 @@ export default async function Page() {
   };
 
   // TODO: Add order by raw order id
-  if (!orders) {
+  if (orders?.length === 0) {
     return (
       <>
         <div className="p-32 flex flex-col gap-4">
@@ -66,6 +68,7 @@ export default async function Page() {
             ))}
           </TableBody>
         </Table>
+        <QueryOrder />
       </div>
     </>
   );

@@ -136,7 +136,6 @@ function Plan(
 }
 
 export function Pricing({ user }) {
-  console.log(user);
   const [modalOpen, setModalOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const [currentOrderId, setCurrentOrderId] = useState(null);

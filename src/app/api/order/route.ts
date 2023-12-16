@@ -1,14 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import { PRODUCTS } from "@/lib/constant";
+import {isDev} from "@/lib/utils";
+import {searchParamsToUrlQuery} from "next/dist/shared/lib/router/utils/querystring";
 
 export async function POST(request: Request) {
-  if (request.method !== "POST") {
-    return new Response(JSON.stringify("Method Not Allowed"), {
-      status: 405,
-    });
-  }
-
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
   const { id, urlKey } = await request.json();
@@ -25,8 +21,7 @@ export async function POST(request: Request) {
 
   const token = process.env.MIANBAODUO_X_TOKEN || "";
   const response = await fetch(
-    // `https://x.mbd.pub/api/order-detail?out_order_id=${id}`,
-    url,
+    isDev() ? url : `https://x.mbd.pub/api/order-detail?out_order_id=${id}`,
     {
       method: "GET",
       headers: {
@@ -118,4 +113,32 @@ export async function POST(request: Request) {
       status: 404,
     },
   );
+}
+
+export async function GET(request: Request) {
+    const cookieStore = cookies();
+    const supabase = createClient(cookieStore);
+    // search param order id
+    const searchParams = new URL(request.url).searchParams;
+    const orderId = searchParams.get("order_id");
+    if (!orderId) {
+        return new Response(JSON.stringify({ message: "Order ID is required." }), {
+            status: 404,
+        });
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        return new Response(JSON.stringify({ message: "Unauthorized" }), {
+            status: 401,
+        });
+    }
+
+    const { data: orderData, error } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("order_id", orderId)
+        .single();
+
+
 }

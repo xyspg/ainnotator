@@ -146,7 +146,7 @@ export function Sidebar({
                   className="highlight__image"
                   style={{ marginTop: "0.5rem" }}
                 >
-                  <img src={highlight.content.image} alt={"Screenshot"} />
+                  {/*<img src={highlight.content.image} alt={"Screenshot"} />*/}
                 </div>
               ) : null}
               <Divider />
