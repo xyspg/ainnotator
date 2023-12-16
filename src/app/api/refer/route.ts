@@ -1,3 +1,7 @@
+/**
+ * This is a webhook triggered route
+ * Using supabase service role key
+ */
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { createClient as cookieClient } from "@/lib/supabase/server";
