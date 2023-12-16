@@ -15,7 +15,6 @@ import { Footer } from "@/app/(landing_page)/components/Footer";
 import { useUserStore } from "@/app/store";
 
 export default function Home() {
-
     return (
     <main>
       <main>
@@ -31,3 +30,4 @@ export default function Home() {
     </main>
   );
 }
+

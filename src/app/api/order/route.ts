@@ -57,7 +57,7 @@ export async function GET(request: Request) {
     .update({
       status: "completed",
       merchant: orderData,
-      payment_method: "mianbaoduo",
+      payment_method: "aifadian",
       real_payment_amount: orderData.data.order.total_amount,
     })
     .eq("order_id", orderId);
