@@ -166,6 +166,19 @@ export async function POST(req: Request) {
     const result = await model.generateContent(promptForGemini);
     const response = result.response;
     return response.text();
+     /**
+    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY!);
+    const geminiStream = await genAI
+        .getGenerativeModel({ model: 'gemini-pro' })
+        .generateContentStream(`$Sentence: ${prompt}\n $Context Section: ${context}\n $Comments:`);
+
+    // Convert the response into a friendly text-stream
+    const stream = GoogleGenerativeAIStream(geminiStream);
+
+    // Respond with the stream
+    return new StreamingTextResponse(stream);
+
+        */
   }
 
   /**

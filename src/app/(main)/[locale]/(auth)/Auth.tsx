@@ -8,6 +8,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/app/store";
 import {nanoid} from "nanoid";
+import {randomNanoID} from "@/lib/utils";
 
 export const AuthModal = ({
   showModal,
@@ -69,7 +70,7 @@ export const AuthModal = ({
               <Auth
                 supabaseClient={supabase}
                 additionalData={{
-                  referer_code: nanoid(9),
+                  referer_code: randomNanoID(),
                 }}
                 localization={{
                   variables: {

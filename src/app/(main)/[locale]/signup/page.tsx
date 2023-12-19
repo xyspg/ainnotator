@@ -6,12 +6,21 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useSearchParams } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { nanoid } from "nanoid";
-import { useEffect, useState } from "react";
+import { useRefererStore } from "@/app/store";
+import { useEffect } from "react";
+import { randomNanoID } from "@/lib/utils";
 
 export default function AuthModalPage() {
   const supabase = createClient();
   const searchParams = useSearchParams();
   const refererCode = searchParams.get("r");
+  const setRefererCode = useRefererStore((state) => state.updateReferer);
+  useEffect(() => {
+    if (refererCode) {
+      setRefererCode(refererCode);
+    }
+  }, []);
+
 
   return (
     <div className="m-6 flex justify-center items-center">
@@ -27,12 +36,12 @@ export default function AuthModalPage() {
               <p className="text-sm text-slate-400">
                 新用户登录即送 50 次 AI 批注
               </p>
-              {refererCode && <>你已被邀请</>}
+              {refererCode && <p className="text-sm">你已被邀请，可再获得 50 免费次数</p>}
             </div>
             <p className="py-6 text-center text-sm text-slate-400">
               点击登录或注册，即同意{" "}
               <Link
-                href="/terms-of-use"
+                href="/legal/terms"
                 target="_blank"
                 className="group underline"
                 aria-label="服务条款"
@@ -41,7 +50,7 @@ export default function AuthModalPage() {
               </Link>{" "}
               和{" "}
               <Link
-                href="/privacy"
+                href="/legal/privacy"
                 target="_blank"
                 className="group underline"
                 aria-label="隐私声明"
@@ -58,7 +67,7 @@ export default function AuthModalPage() {
               view="sign_up"
               additionalData={{
                 referred_by: refererCode,
-                referer_code: nanoid(9),
+                referer_code: randomNanoID(),
               }}
               localization={{
                 variables: {

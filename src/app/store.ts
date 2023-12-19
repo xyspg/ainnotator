@@ -7,6 +7,16 @@ export const useUserStore = create((set) => ({
   updateUser: (user: User) => set(() => ({ user })),
 }));
 
+type RefererStore = {
+    referer: string;
+    updateReferer: (referer: string) => void;
+};
+
+export const useRefererStore = create<RefererStore>((set) => ({
+    referer: "",
+    updateReferer: (referer: string) => set(() => ({ referer })),
+}));
+
 export const useOpenAIKeyStore = create(
   persist(
     (set, get) => ({

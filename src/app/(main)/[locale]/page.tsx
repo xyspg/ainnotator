@@ -11,10 +11,18 @@ import { Testimonials } from "@/app/(landing_page)/components/Testimonials";
 import { Pricing } from "@/app/(landing_page)/components/Pricing";
 import { Faqs } from "@/app/(landing_page)/components/Faqs";
 import { Footer } from "@/app/(landing_page)/components/Footer";
+import { useEffect } from "react";
 
-import { useUserStore } from "@/app/store";
+import { useRefererStore } from "@/app/store";
 
 export default function Home() {
+    const referer = useRefererStore((state) => state.referer);
+    useEffect(() => {
+        if (referer) {
+            console.log("referer from home --> ", referer)
+        }
+
+    }, []);
     return (
     <main>
       <main>

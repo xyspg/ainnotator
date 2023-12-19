@@ -8,6 +8,9 @@ import { createClient as cookieClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   console.log("ROUTE TRIGGERED");
+  /**
+   * Simple authentication
+   */
   const credential = request.headers.get("x-credential");
   if (!credential) {
     return new Response("No credential", {
@@ -71,6 +74,8 @@ export async function POST(request: Request) {
         ainnotation_credit: referee.ainnotation_credit + 50,
       })
       .eq("id", referee.id);
+
+    // update referer
     const { error: refererCreditError } = await supabase
       .from("users")
       .update({
@@ -87,6 +92,9 @@ export async function POST(request: Request) {
     console.log(updateError, creditError, refererCreditError);
   }
 
+  /**
+   * Loop through all untracked users
+   */
   for (const user of unTrackedUsers) {
     const { referred_by } = user;
     const referer = allUsers?.find((user) => user.referer_code === referred_by);
@@ -96,7 +104,7 @@ export async function POST(request: Request) {
     await handleRefer(referer, user);
   }
 
-  /*
+  /**
    * 初次注册 给被邀请者和邀请者赠送 50 Credit
    */
 
