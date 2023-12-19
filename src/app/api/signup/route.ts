@@ -1,3 +1,0 @@
-/**
- * On auth user created
- */
