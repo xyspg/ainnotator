@@ -34,7 +34,7 @@ export default function Home() {
         }
         trackReferer();
 
-    }, []);
+    }, [refererCode]);
     return (
     <main>
       <main>
