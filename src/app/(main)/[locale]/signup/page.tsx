@@ -22,6 +22,9 @@ export default function AuthModalPage() {
     }
   }, []);
 
+  const redirectUrl = refererCode ? `/?r=${refererCode}` : `/`;
+  console.log("Redirect URL --->",redirectUrl)
+
 
   return (
     <div className="m-6 flex justify-center items-center">
@@ -70,7 +73,7 @@ export default function AuthModalPage() {
                 referred_by: refererCode,
                 referer_code: randomNanoID(),
               }}
-              redirectTo={`/${refererCode ? `?r=${refererCode}` : ""}`}
+              redirectTo={redirectUrl}
               localization={{
                 variables: {
                   sign_up: {
