@@ -15,27 +15,55 @@ import { useEffect } from "react";
 
 import { useRefererStore } from "@/app/store";
 import {useSearchParams} from "next/navigation";
+import { RequestInfo } from "undici-types";
 
 export default function Home() {
-    // const referer = useRefererStore((state) => state.referer);
-    const searchParams = useSearchParams();
-    const refererCode = searchParams.get("r");
-    useEffect(() => {
-        async function trackReferer() {
-            if (refererCode) {
-                await fetch("/api/refer/track", {
-                    method: "POST",
-                    body: JSON.stringify({"referer": refererCode}),
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
-            }
-        }
-        trackReferer();
+  // const referer = useRefererStore((state) => state.referer);
+  const searchParams = useSearchParams();
+  const refererCode = searchParams.get("r");
+  const MAX_RETRIES = 10;
 
-    }, [refererCode]);
-    return (
+  async function fetchWithRetry(
+    url: string,
+    options: RequestInit | undefined,
+    retries = 0,
+  ) {
+    try {
+      const response = await fetch(url, options);
+
+      if (response.ok) {
+        return response.json();
+      } else if (response.status === 401 && retries < MAX_RETRIES) {
+        await delay(1000);
+        return fetchWithRetry(url, options, retries + 1);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  }
+
+  function delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  useEffect(() => {
+    async function trackReferer() {
+      if (refererCode) {
+        await fetchWithRetry("/api/refer/track", {
+          method: "POST",
+          body: JSON.stringify({ referer: refererCode }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+      }
+    }
+    trackReferer();
+  }, [refererCode]);
+  return (
     <main>
       <main>
         <Hero />

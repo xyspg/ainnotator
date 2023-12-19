@@ -76,7 +76,7 @@ export async function POST(request: Request) {
   await fetch(
     isDev()
       ? `http://localhost:3000/api/refer`
-      : `https://${process.env.VERCEL_URL}/api/refer`,
+      : `https://ainnotator.com/api/refer`,
     {
       method: "POST",
       headers: {

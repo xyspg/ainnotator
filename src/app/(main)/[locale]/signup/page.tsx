@@ -15,6 +15,8 @@ export default function AuthModalPage() {
   const searchParams = useSearchParams();
   const refererCode = searchParams.get("r");
   const setRefererCode = useRefererStore((state) => state.updateReferer);
+
+
   useEffect(() => {
     if (refererCode) {
       setRefererCode(refererCode);
