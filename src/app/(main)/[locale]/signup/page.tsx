@@ -18,6 +18,7 @@ export default function AuthModalPage() {
   useEffect(() => {
     if (refererCode) {
       setRefererCode(refererCode);
+      console.log("referer code --> ", refererCode)
     }
   }, []);
 
@@ -69,6 +70,7 @@ export default function AuthModalPage() {
                 referred_by: refererCode,
                 referer_code: randomNanoID(),
               }}
+              redirectTo={`/${refererCode ? `?r=${refererCode}` : ""}`}
               localization={{
                 variables: {
                   sign_up: {

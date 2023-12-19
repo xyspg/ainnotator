@@ -14,13 +14,25 @@ import { Footer } from "@/app/(landing_page)/components/Footer";
 import { useEffect } from "react";
 
 import { useRefererStore } from "@/app/store";
+import {useSearchParams} from "next/navigation";
 
 export default function Home() {
-    const referer = useRefererStore((state) => state.referer);
+    // const referer = useRefererStore((state) => state.referer);
+    const searchParams = useSearchParams();
+    const refererCode = searchParams.get("r");
     useEffect(() => {
-        if (referer) {
-            console.log("referer from home --> ", referer)
+        async function trackReferer() {
+            if (refererCode) {
+                await fetch("/api/refer/track", {
+                    method: "POST",
+                    body: JSON.stringify({"referer": refererCode}),
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+            }
         }
+        trackReferer();
 
     }, []);
     return (
