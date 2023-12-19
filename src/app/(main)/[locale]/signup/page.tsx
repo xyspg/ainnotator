@@ -22,7 +22,7 @@ export default function AuthModalPage() {
     }
   }, []);
 
-  const redirectUrl = refererCode ? `/?r=${refererCode}` : `/`;
+  const redirectUrl = refererCode ? `https://ainnotator.com/?r=${refererCode}` : `https://ainnotator.com`;
   console.log("Redirect URL --->",redirectUrl)
 
 
