@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import {GoogleGenerativeAIStream, OpenAIStream, StreamingTextResponse} from "ai";
 import { openaiRatelimit } from "@/lib/upstash";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
@@ -161,33 +161,22 @@ export async function POST(req: Request) {
    */
   async function GeminiCompletion() {
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    const promptForGemini = `$Sentence: ${prompt}\n $Context Section: ${context}\n $Comments:`;
-    const result = await model.generateContent(promptForGemini);
-    const response = result.response;
-    return response.text();
-     /**
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY!);
-    const geminiStream = await genAI
-        .getGenerativeModel({ model: 'gemini-pro' })
+    return genAI
+        .getGenerativeModel({model: 'gemini-pro'})
         .generateContentStream(`$Sentence: ${prompt}\n $Context Section: ${context}\n $Comments:`);
-
-    // Convert the response into a friendly text-stream
-    const stream = GoogleGenerativeAIStream(geminiStream);
-
-    // Respond with the stream
-    return new StreamingTextResponse(stream);
-
-        */
   }
 
   /**
    * If Gemini fails, use OpenAI
    */
   try {
-    const response = await GeminiCompletion();
-    await insertRecord(response, "gemini-pro");
-    return new Response(response, { status: 200 });
+    const geminiResponse = await GeminiCompletion();
+    const stream = GoogleGenerativeAIStream(geminiResponse, {
+      onFinal: async (resp) => {
+        await insertRecord(resp, "gemini-pro");
+      },
+    });
+    return new StreamingTextResponse(stream);
   } catch (e) {
     console.error(e);
     const openAIResponse = await OpenAICompletion();
