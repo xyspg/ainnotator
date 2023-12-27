@@ -252,9 +252,9 @@ export function Pricing({ user }) {
           />
           <Plan
             featured
-            name="2500 AInnotations"
-            price="$40"
-            discountedPrice="$19.8"
+            name="2000 AInnotations"
+            price="$20"
+            discountedPrice="$9.8"
             description="限时圣诞折扣：50% OFF"
             tag={"性价比最高"}
             target={"_blank"}
