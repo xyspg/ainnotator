@@ -68,7 +68,7 @@ export default async function Page() {
             ))}
           </TableBody>
         </Table>
-        <QueryOrder />
+        {/*<QueryOrder />*/}
       </div>
     </>
   );

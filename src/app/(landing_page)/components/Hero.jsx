@@ -113,7 +113,7 @@ export function Hero() {
         </ul>
       </div>
 
-      */}
+
       <ClientOnly>
         {!guideShown && (
           <AlertDialog defaultOpen={true} onOpenChange={handleModalClose}>
@@ -133,6 +133,7 @@ export function Hero() {
           </AlertDialog>
         )}
       </ClientOnly>
+          */}
     </Container>
   );
 }

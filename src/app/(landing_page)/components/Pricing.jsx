@@ -258,7 +258,7 @@ export function Pricing({ user }) {
             description="限时圣诞折扣：50% OFF"
             tag={"性价比最高"}
             target={"_blank"}
-            onButtonClick={() => checkOut(2500)}
+            onButtonClick={() => checkOut(2000)}
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",

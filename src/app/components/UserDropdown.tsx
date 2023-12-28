@@ -39,10 +39,11 @@ import Link from "next/link";
 export function UserDropdown({ user }: { user: SupabaseUser }) {
   const supabase = createClient();
   const router = useRouter();
-
+  console.log(user);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
+
         <Button variant="outline">Account</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
