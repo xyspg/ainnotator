@@ -5,6 +5,8 @@ import { Button } from "@/app/components/ui/button";
 import React from "react";
 import { Input } from "@/app/components/ui/input";
 import { RefererLinkCopier } from "@/app/(main)/[locale]/(account)/referral/referer-client";
+import {randomNanoID} from "@/lib/utils";
+import {redirect} from "next/navigation";
 
 export default async function Page() {
   const cookieStore = cookies();
@@ -12,23 +14,31 @@ export default async function Page() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  let referLink;
+
   const { data, error } = await supabase
     .from("referrals")
     .select("*")
     .eq("referer_id", user?.id);
-  console.log(data);
 
   /**
    * Get User Refer Link
+   * If not exist, create one
    */
-  const { data: referLink, error: referLinkError } = await supabase
-    .from("users")
-    .select("referer_code")
-    .eq("id", user?.id)
-    .single();
-  console.log(referLink);
+  referLink = user?.user_metadata.referer_code
+  if (!referLink) {
+    console.log("updating referer code");
+    const generatedRefererCode = randomNanoID();
+    referLink = generatedRefererCode;
+    const { data: refererCode, error: refererCodeError } = await supabase.auth.updateUser({
+      data: {
+        referer_code: generatedRefererCode,
+      }
+    })
+  }
 
-  const link = `https://ainnotator.com/signup?r=${referLink?.referer_code}`;
+  const link = `https://ainnotator.com/signup?r=${referLink}`;
 
   const refereeCount = data?.length;
 
@@ -53,6 +63,8 @@ export default async function Page() {
     // 2 digit
     return (amt / 7).toFixed(2);
   };
+
+
 
   return (
     <div className="flex flex-col gap-4">

@@ -54,7 +54,9 @@ function MobileNavIcon({ open }) {
   );
 }
 
-function MobileNavigation() {
+function MobileNavigation({ user }) {
+  const supabase = createClient();
+  const router = useRouter();
   return (
     <Popover>
       <Popover.Button
@@ -88,10 +90,30 @@ function MobileNavigation() {
             as="div"
             className="absolute inset-x-0 top-full mt-4 flex origin-top flex-col rounded-2xl bg-white p-4 text-lg tracking-tight text-slate-900 shadow-xl ring-1 ring-slate-900/5"
           >
-            <MobileNavLink href="#features">History</MobileNavLink>
-            <MobileNavLink href="#testimonials">Pricing</MobileNavLink>
-            <hr className="m-2 border-slate-300/40" />
-            <MobileNavLink href="/signup">Sign Up</MobileNavLink>
+            {user && (
+              <>
+                <h1 className="p-2">{user?.email}</h1>
+                <MobileNavLink href="/orders">Orders</MobileNavLink>
+                <MobileNavLink href="/settings">Settings</MobileNavLink>
+                <MobileNavLink href="/referral">Referral Program</MobileNavLink>
+                <MobileNavLink href="/history">History</MobileNavLink>
+                <MobileNavLink href="/pricing">Pricing</MobileNavLink>
+                <hr className="m-2 border-slate-300/40" />
+              </>
+            )}
+            {user ? (
+              <span
+                onClick={() => {
+                  supabase.auth.signOut();
+                  router.refresh();
+                }}
+              >
+                {" "}
+                <MobileNavLink href="#">Logout</MobileNavLink>
+              </span>
+            ) : (
+              <MobileNavLink href="/signup">Sign Up</MobileNavLink>
+            )}
           </Popover.Panel>
         </Transition.Child>
       </Transition.Root>
@@ -119,6 +141,7 @@ export function Header({ user, credit }) {
               </div>
             </div>
             <div className="flex items-center gap-x-5 md:gap-x-8">
+              <div className="hidden md:flex items-center gap-x-5 md:gap-x-8">
               {user ? (
                 <>
                   <UserDropdown user={user} />
@@ -138,9 +161,10 @@ export function Header({ user, credit }) {
                 </>
               )}
               {user && <CreditIndicator />}
+              </div>
 
               <div className="-mr-1 md:hidden">
-                <MobileNavigation />
+                <MobileNavigation user={user} />
               </div>
             </div>
           </nav>

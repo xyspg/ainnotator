@@ -35,16 +35,35 @@ import { useRouter } from "next/navigation";
 
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import Link from "next/link";
+import Image from "next/image";
+import { isDev } from "@/lib/utils";
 
 export function UserDropdown({ user }: { user: SupabaseUser }) {
   const supabase = createClient();
   const router = useRouter();
-  console.log(user);
+  router.prefetch("/orders");
+  router.prefetch("/settings");
+  router.prefetch("/referral");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-
-        <Button variant="outline">Account</Button>
+        {user?.user_metadata?.avatar_url ? (
+          <img
+            alt={user?.email!}
+            className="w-8 h-8 rounded-full"
+            width={32}
+            height={32}
+            src={user?.user_metadata?.avatar_url}
+          />
+        ) : (
+          <p
+            className="w-8 h-8 bg-slate-700
+             flex justify-center items-center uppercase cursor-pointer
+             rounded-full text-white"
+          >
+            {user.email?.split("")[0]}
+          </p>
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>
