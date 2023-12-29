@@ -9,19 +9,18 @@ const Page = async ({
 }) => {
   const refererCode = searchParams?.r;
 
-  await fetch(
-    `${
-      isDev() ? "http://localhost:3000" : "https://ainnotator"
-    }/api/refer/track`,
-    {
-      method: "POST",
-      body: JSON.stringify({ referer: refererCode }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    },
-  );
+  if (refererCode) {
+    await fetch("https://ainnotator.com/api/refer/track",
+        {
+          method: "POST",
+          body: JSON.stringify({referer: refererCode}),
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        },
+    );
+  }
 
   return (
     <>
