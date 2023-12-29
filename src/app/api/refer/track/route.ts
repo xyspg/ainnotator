@@ -1,4 +1,5 @@
 /**
+ * LEGACY
  * OAuth like Login with Google will not include user metadata
  * Manually update user metadata for those users
  * First check if they have already been invited
@@ -20,6 +21,9 @@ export async function POST(request: Request) {
     });
   }
 
+  /**
+   * Check if already referred
+   */
   const { data: refer, error } = await supabase
     .from("users")
     .select("referred_by")
@@ -30,7 +34,7 @@ export async function POST(request: Request) {
     console.error(error.message);
     return new Response(error.message, { status: 500 });
   }
-  console.log(refer.referred_by);
+  console.log("Referred By ", refer.referred_by);
 
   /**
    * If already referred
@@ -50,10 +54,14 @@ export async function POST(request: Request) {
     });
   }
 
+  /**
+   * Update user metadata
+   */
   const { data, error: UpdateError } = await supabase.auth.updateUser({
     data: { referred_by: referer },
   });
   console.log(data);
+
   const { error: UpdateRefererError } = await supabase
     .from("users")
     .update({
