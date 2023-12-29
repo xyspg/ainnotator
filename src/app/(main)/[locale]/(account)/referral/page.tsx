@@ -86,7 +86,7 @@ export default async function Page() {
         </p>
         <p className="text-sm">
           Earn 20% cashback when your friends purchases. Currently $
-          {toUSD(totalRefereeSpending!)} (Payout at $20){" "}
+          {toUSD(totalRefereeSpending! * 0.2)} (Payout at $20){" "}
         </p>
 
         {data?.map((referral) => (
