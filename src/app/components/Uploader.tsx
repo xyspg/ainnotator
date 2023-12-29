@@ -5,12 +5,27 @@ import { Group, rem, Text } from "@mantine/core";
 import { IconFile, IconUpload, IconX } from "@tabler/icons-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslations } from "next-intl";
+import { createClient } from "@/lib/supabase/client";
 import { useOpenAIKeyStore } from "@/app/store";
 import { Input } from "@/app/components/ui/input";
+import {AuthModal} from "@/app/(main)/[locale]/(auth)/Auth";
 
 export default function Uploader() {
   const [fileUUID, setFileUUID] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const supabase = createClient()
+  useEffect(() => {
+    async function getUser() {
+      const { data: { user }} = await supabase.auth.getUser();
+      if (user) {
+        setIsLogged(true);
+      }
+    }
+    getUser();
+
+  }, []);
 
   const router = useRouter();
   const t = useTranslations("Hero");
@@ -63,8 +78,14 @@ export default function Uploader() {
         />
 
         */}
+      <AuthModal showModal={modalOpen} setShowModal={()=>{setModalOpen(false)}} />
       <Dropzone
         onDrop={(file) => {
+          if (!isLogged) {
+            toast("Please log in first.");
+            setModalOpen(true)
+            return;
+          }
           handleUpload(file);
         }}
         accept={[MIME_TYPES.pdf]}

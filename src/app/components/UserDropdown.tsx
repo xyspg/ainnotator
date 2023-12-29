@@ -109,7 +109,9 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
         {/*</DropdownMenuItem>*/}
         <DropdownMenuItem>
           <LifeBuoy className="mr-2 h-4 w-4" />
+          <Link href="mailto:support@ainnotator.com" data-umami-event="click_support">
           <span>Support</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem disabled>
           <Cloud className="mr-2 h-4 w-4" />

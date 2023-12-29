@@ -121,6 +121,7 @@ function Plan(
         ))}
       </ul>
       <Button
+          data-umami-event={`click_${name}_plan_for_${price}`}
         href={href}
         target={target}
         onClick={onButtonClick}
@@ -197,7 +198,7 @@ export function Pricing({ user }) {
     <section
       id="pricing"
       aria-label="Pricing"
-      className="bg-slate-900 py-20 sm:py-32"
+      className="bg-slate-900 py-20 sm:py-32 min-h-screen"
     >
       <Toaster />
       {modalOpen && (

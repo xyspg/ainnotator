@@ -21,6 +21,7 @@ export async function GET(request: Request) {
     });
   }
 
+
   const { searchParams } = new URL(request.url);
   const orderId = searchParams.get("order_id");
   if (!orderId) {

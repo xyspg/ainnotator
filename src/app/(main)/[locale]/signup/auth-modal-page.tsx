@@ -46,6 +46,7 @@ export default function AuthModalPage() {
                         <p className="py-6 text-center text-sm text-slate-400">
                             点击登录或注册，即同意{" "}
                             <Link
+                                data-umami-event="click_terms_from_signin"
                                 href="/legal/terms"
                                 target="_blank"
                                 className="group underline"
@@ -55,6 +56,7 @@ export default function AuthModalPage() {
                             </Link>{" "}
                             和{" "}
                             <Link
+                                data-umami-event="click_privacy_policy_from_signin"
                                 href="/legal/privacy"
                                 target="_blank"
                                 className="group underline"

@@ -98,6 +98,7 @@ function MobileNavigation({ user }) {
                 <MobileNavLink href="/referral">Referral Program</MobileNavLink>
                 <MobileNavLink href="/history">History</MobileNavLink>
                 <MobileNavLink href="/pricing">Pricing</MobileNavLink>
+                <MobileNavLink href="mailto:support@ainnotator.com">Support</MobileNavLink>
                 <hr className="m-2 border-slate-300/40" />
               </>
             )}
@@ -160,8 +161,8 @@ export function Header({ user, credit }) {
                   </Button>
                 </>
               )}
-              {user && <CreditIndicator />}
               </div>
+              {user && <CreditIndicator />}
 
               <div className="-mr-1 md:hidden">
                 <MobileNavigation user={user} />
