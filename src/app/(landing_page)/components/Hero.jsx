@@ -27,15 +27,10 @@ import {
 import { isDev } from "@/lib/utils";
 import { useMetaDataStore } from "@/app/store";
 import { ClientOnly } from "@/lib/clientOnly";
+import {CookiePrompter} from "@/app/(main)/[locale]/cookie";
 
 export function Hero() {
   const t = useTranslations("Hero");
-  const { metaData, setMetaData } = useMetaDataStore();
-  const guideShown = metaData.guide_shown;
-
-  const handleModalClose = () => {
-    setMetaData({ ...metaData, guide_shown: true });
-  };
 
   return (
     <Container className="pt-20 pb-16 text-center lg:pt-32">
@@ -113,26 +108,6 @@ export function Hero() {
         </ul>
       </div>
 
-
-      <ClientOnly>
-        {!guideShown && (
-          <AlertDialog defaultOpen={true} onOpenChange={handleModalClose}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle className="text-red-500">
-                  欢迎来到删档内测
-                </AlertDialogTitle>
-                <AlertDialogDescription className="">
-                  求你了，来测
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogAction>Continue</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
-      </ClientOnly>
           */}
     </Container>
   );

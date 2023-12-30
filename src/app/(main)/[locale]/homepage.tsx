@@ -13,12 +13,20 @@ import { Faqs } from "@/app/(landing_page)/components/Faqs";
 import { Footer } from "@/app/(landing_page)/components/Footer";
 import { useEffect } from "react";
 
-import { useRefererStore } from "@/app/store";
+import {useMetaDataStore, useRefererStore} from "@/app/store";
 import {useSearchParams} from "next/navigation";
 import { RequestInfo } from "undici-types";
+import {CookiePrompter} from "@/app/(main)/[locale]/cookie";
+import {ClientOnly} from "@/lib/clientOnly";
 
 export function HomePage() {
+    const { metaData, setMetaData } = useMetaDataStore();
+    const cookieShown = metaData.cookie_shown;
 
+    const handleModalClose = () => {
+        console.log("closed");
+        setMetaData({ ...metaData, cookie_shown: true });
+    };
     return (
         <main>
             <main>
@@ -29,6 +37,11 @@ export function HomePage() {
                 {/*<Testimonials />*/}
                 {/*<Pricing />*/}
                 {/*<Faqs />*/}
+                <ClientOnly>
+                    {!cookieShown && (
+                        <CookiePrompter onCookieClose={handleModalClose} />
+                    )}
+                </ClientOnly>
             </main>
             <Footer />
         </main>

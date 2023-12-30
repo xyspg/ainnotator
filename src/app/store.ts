@@ -30,10 +30,10 @@ export const useOpenAIKeyStore = create(
   ),
 );
 
-export const useMetaDataStore = create(
+export const useMetaDataStore = create<any>(
   persist(
     (set, get) => ({
-      metaData: { guide_shown: false, version: '0.0.1' },
+      metaData: { guide_shown: false, version: '0.0.1', cookie_shown: false },
       setMetaData: (metaData: any) => set(() => ({ metaData })),
     }),
     {
