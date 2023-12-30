@@ -8,8 +8,8 @@ export function CustomAPIKey() {
   const [checked, setChecked] = useState(false);
   return (
     <div className="flex items-center space-x-2">
-      <Switch id="custom-api-key" />
-      <Label htmlFor="custom-api-key">Custom API Key</Label>
+      <Switch id="custom-api-key" disabled />
+      <Label htmlFor="custom-api-key">Custom API Key (Coming Soon)</Label>
     </div>
   );
 }
