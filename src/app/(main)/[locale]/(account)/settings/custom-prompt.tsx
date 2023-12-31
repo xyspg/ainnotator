@@ -29,7 +29,6 @@ export function CustomPrompt({ prompt }: { prompt: string }) {
       },
       body: JSON.stringify({ setting: "custom_prompt", prompt: "" }),
     });
-    toast.success("Deleted!");
   };
 
   const handleSwitch = () => {

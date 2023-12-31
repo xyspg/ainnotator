@@ -75,17 +75,15 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
           {/*  <span>Profile</span>*/}
           {/*  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>*/}
           {/*</DropdownMenuItem>*/}
-          <DropdownMenuItem>
+          <DropdownMenuItem className='relative'>
             <CreditCard className="mr-2 h-4 w-4" />
-            <Link href="/orders">
+            <Link href="/orders" className='absolute inset-0' />
               <span>Orders</span>
-            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem className='relative'>
             <Settings className="mr-2 h-4 w-4" />
-            <Link href="/settings">
+            <Link href="/settings" className='absolute inset-0'/>
               <span>Settings</span>
-            </Link>
           </DropdownMenuItem>
           {/*<DropdownMenuItem>*/}
           {/*  <Keyboard className="mr-2 h-4 w-4" />*/}
@@ -95,11 +93,10 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem className='relative'>
             <UserPlus className="mr-2 h-4 w-4" />
-            <Link href="/referral">
+            <Link href="/referral" className='absolute inset-0' />
               <span>Referral Program</span>
-            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -107,11 +104,10 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
         {/*  <Github className="mr-2 h-4 w-4" />*/}
         {/*  <span>GitHub</span>*/}
         {/*</DropdownMenuItem>*/}
-        <DropdownMenuItem>
+        <DropdownMenuItem className='relative'>
           <LifeBuoy className="mr-2 h-4 w-4" />
-          <Link href="mailto:support@ainnotator.com" data-umami-event="click_support">
+          <Link href="mailto:support@ainnotator.com" data-umami-event="click_support" className='absolute inset-0'/>
           <span>Support</span>
-          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem disabled>
           <Cloud className="mr-2 h-4 w-4" />

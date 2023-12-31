@@ -6,7 +6,7 @@ import { CustomPrompt } from "@/app/(main)/[locale]/(account)/settings/custom-pr
 import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 
-export const revalidate = 0;
+export const dynamic = 'force-dynamic'
 
 export default async function Page() {
   const s = createClient(cookies());
