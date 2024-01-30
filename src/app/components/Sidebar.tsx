@@ -31,6 +31,7 @@ export function Sidebar({
 }: Props) {
   const [isCardVisible, setIsCardVisible] = useState(true);
   const [textSelection, setTextSelection] = useState<string>("");
+  const [originalText, setOriginalText] = useState<string>(completion);
   const handleAddAnnotation = () => {
     // Toggle the visibility of the card
     setIsCardVisible(false);
@@ -58,8 +59,10 @@ export function Sidebar({
    */
   const handleMouseUp = () => {
     const selection = window.getSelection()?.toString();
-    if (selection) {
+    if (selection && selection.trim() !== "") {
       setTextSelection(selection);
+    } else {
+      setTextSelection(originalText)
     }
   };
 
@@ -108,18 +111,9 @@ export function Sidebar({
           <Divider />
           {completion && !loading && (
             <div className="p-4 flex flex-col gap-2">
-              <Button color="primary" onClick={handleAddAnnotation}>
-                Add Annotation
-              </Button>
-              {textSelection ? (
                 <Button color="secondary" onClick={handleAddAnnotation}>
-                  Add Custom Annotation
+                  {textSelection ? 'Add Custom Annotation' : 'Add Annotation'}
                 </Button>
-              ) : (
-                <Button color="secondary" disabled>
-                  Select some text to add partially
-                </Button>
-              )}
             </div>
           )}
         </Card>
