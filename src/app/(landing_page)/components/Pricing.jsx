@@ -121,7 +121,7 @@ function Plan(
         ))}
       </ul>
       <Button
-          data-umami-event={`click_${name}_plan_for_${price}`}
+        data-umami-event={`click_${name}_plan_for_${price}`}
         href={href}
         target={target}
         onClick={onButtonClick}
@@ -156,9 +156,8 @@ export function Pricing({ user }) {
       toast("请先登录哦");
       return;
     }
-    const thisProduct = PRODUCTS.find((p) => p.amount === amount);
-    const url = thisProduct.url;
-    setCurrentProduct(thisProduct);
+    const url =
+      "https://ainnotator.lemonsqueezy.com/checkout/buy/e7b2e534-e89d-4218-a7be-60b1df8fa69d";
     // 生成订单id
     const orderId = generateOrderId();
     setCurrentOrderId(orderId);
@@ -168,7 +167,6 @@ export function Pricing({ user }) {
         method: "POST",
         body: JSON.stringify({
           orderId,
-          productId: thisProduct.id,
         }),
       }).then((res) => res.json());
     } catch (e) {
@@ -176,11 +174,17 @@ export function Pricing({ user }) {
     }
 
     // custom_order_id
-    const checkoutUrl = `${url}&custom_order_id=${orderId}`;
+    const checkoutUrl = `
+    ${url}
+    ?checkout[email]=${user?.email}
+    &checkout[custom][user_id]=${user?.id}
+    &checkout[discount_code]=NEWYEAR2024
+    `;
     setModalOpen(true);
     window.open(checkoutUrl, "_blank");
   }
 
+  /*
   async function handleComplete() {
     setModalOpen(false);
     const response = await fetch(`/api/order?order_id=${currentOrderId}`).then((res) => res.json());
@@ -194,6 +198,8 @@ export function Pricing({ user }) {
     }
   }
 
+   */
+
   return (
     <section
       id="pricing"
@@ -201,14 +207,14 @@ export function Pricing({ user }) {
       className="bg-slate-900 py-20 sm:py-32 min-h-screen"
     >
       <Toaster />
-      {modalOpen && (
-        <PaymentDialog
-          onClose={() => {
-            setModalOpen(false);
-          }}
-          onComplete={handleComplete}
-        />
-      )}
+      {/*{modalOpen && (*/}
+      {/*  <PaymentDialog*/}
+      {/*    onClose={() => {*/}
+      {/*      setModalOpen(false);*/}
+      {/*    }}*/}
+      {/*    onComplete={handleComplete}*/}
+      {/*  />*/}
+      {/*)}*/}
       <Container>
         <div className="md:text-center">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">

@@ -21,16 +21,13 @@ export default async function Page() {
     data: { user },
   } = await supabase.auth.getUser();
   const { data: orders, error } = await supabase
-    .from("orders")
+    .from("transactions")
     .select("*")
     .eq("user_id", user?.id)
+    .eq('category', 'Top Up')
     .order("created_at", { ascending: false });
-  const mapping = {
-    pending: "等待支付",
-    paid: "已支付",
-  };
 
-  // TODO: Add order by raw order id
+  console.log(orders);
   if (orders?.length === 0) {
     return (
       <>
@@ -49,21 +46,19 @@ export default async function Page() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order ID</TableHead>
               <TableHead>Created At</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>Category</TableHead>
               <TableHead>Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orders?.map((order) => (
               <TableRow key={order.id}>
-                <TableCell>{order.order_id}</TableCell>
                 <TableCell>
                   {new Date(order.created_at).toLocaleString("zh-CN")}
                 </TableCell>
-                <TableCell>{order.status}</TableCell>
-                <TableCell>{order.product.name}</TableCell>
+                <TableCell>{order.category}</TableCell>
+                <TableCell>{order.amount}</TableCell>
               </TableRow>
             ))}
           </TableBody>
