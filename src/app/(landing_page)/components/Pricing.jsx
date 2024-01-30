@@ -137,50 +137,25 @@ function Plan(
 }
 
 export function Pricing({ user }) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
-  const [currentOrderId, setCurrentOrderId] = useState(null);
-  const router = useRouter();
-
-  function generateOrderId() {
-    return Math.random().toString(36).slice(2, 9);
-  }
 
   /**
    * 处理购买逻辑，生成订单，将订单信息存入数据库，跳转到支付页面
    * @param amount
    * @returns {Promise<void>}
    */
-  async function checkOut(amount) {
+  async function checkOut() {
     if (!user) {
       toast("请先登录哦");
       return;
     }
     const url =
       "https://ainnotator.lemonsqueezy.com/checkout/buy/e7b2e534-e89d-4218-a7be-60b1df8fa69d";
-    // 生成订单id
-    const orderId = generateOrderId();
-    setCurrentOrderId(orderId);
-
-    try {
-      await fetch("/api/order/add", {
-        method: "POST",
-        body: JSON.stringify({
-          orderId,
-        }),
-      }).then((res) => res.json());
-    } catch (e) {
-      toast.error(e.toString());
-    }
-
-    // custom_order_id
     const checkoutUrl = `
     ${url}
     ?checkout[email]=${user?.email}
     &checkout[custom][user_id]=${user?.id}
     &checkout[discount_code]=NEWYEAR2024
     `;
-    setModalOpen(true);
     window.open(checkoutUrl, "_blank");
   }
 
@@ -249,7 +224,7 @@ export function Pricing({ user }) {
             description="限时圣诞折扣：50% OFF"
             target="_blank"
             tag={"热销"}
-            onButtonClick={() => checkOut(500)}
+            onButtonClick={() => checkOut()}
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",
@@ -265,7 +240,7 @@ export function Pricing({ user }) {
             description="限时圣诞折扣：50% OFF"
             tag={"性价比最高"}
             target={"_blank"}
-            onButtonClick={() => checkOut(2000)}
+            onButtonClick={() => checkOut()}
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",

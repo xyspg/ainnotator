@@ -203,10 +203,9 @@ export async function POST(req: Request) {
    * If Gemini fails, use OpenAI
    */
   try {
-    console.log(content);
     const geminiResponse = await GeminiCompletion();
     const stream = GoogleGenerativeAIStream(geminiResponse, {
-      onFinal: async (resp) => {
+      onFinal: async resp => {
         await insertRecord(resp, "gemini-pro");
       },
     });
@@ -214,14 +213,11 @@ export async function POST(req: Request) {
   } catch (e) {
     console.error(e);
     const openAIResponse = await OpenAICompletion();
-
-    // after the completion, save the response to the database
     const stream = OpenAIStream(openAIResponse, {
-      onFinal: async (resp) => {
+      onFinal: async resp => {
         await insertRecord(resp, "gpt-3.5-turbo");
       },
     });
-
     return new StreamingTextResponse(stream);
   }
 }
