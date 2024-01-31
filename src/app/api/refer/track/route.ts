@@ -60,7 +60,6 @@ export async function POST(request: Request) {
   const { data, error: UpdateError } = await supabase.auth.updateUser({
     data: { referred_by: referer },
   });
-  console.log(data);
 
   const { error: UpdateRefererError } = await supabase
     .from("users")

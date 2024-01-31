@@ -137,19 +137,15 @@ function Plan(
 }
 
 export function Pricing({ user }) {
-
   /**
-   * 处理购买逻辑，生成订单，将订单信息存入数据库，跳转到支付页面
-   * @param amount
-   * @returns {Promise<void>}
+   * 处理购买逻辑，跳转到支付页面
    */
-  async function checkOut() {
+   function checkOut() {
     if (!user) {
       toast("请先登录哦");
       return;
     }
-    const url =
-      "https://ainnotator.lemonsqueezy.com/checkout/buy/e7b2e534-e89d-4218-a7be-60b1df8fa69d";
+    const url = process.env.NEXT_PUBLIC_STORE_URL
     const checkoutUrl = `
     ${url}
     ?checkout[email]=${user?.email}
@@ -159,22 +155,6 @@ export function Pricing({ user }) {
     window.open(checkoutUrl, "_blank");
   }
 
-  /*
-  async function handleComplete() {
-    setModalOpen(false);
-    const response = await fetch(`/api/order?order_id=${currentOrderId}`).then((res) => res.json());
-
-    if (response.code === 200) {
-      toast.success("购买成功");
-      router.push("/");
-    } else {
-      const error = response.message;
-      toast.error(error);
-    }
-  }
-
-   */
-
   return (
     <section
       id="pricing"
@@ -182,14 +162,6 @@ export function Pricing({ user }) {
       className="bg-slate-900 py-20 sm:py-32 min-h-screen"
     >
       <Toaster />
-      {/*{modalOpen && (*/}
-      {/*  <PaymentDialog*/}
-      {/*    onClose={() => {*/}
-      {/*      setModalOpen(false);*/}
-      {/*    }}*/}
-      {/*    onComplete={handleComplete}*/}
-      {/*  />*/}
-      {/*)}*/}
       <Container>
         <div className="md:text-center">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
@@ -214,21 +186,19 @@ export function Pricing({ user }) {
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",
-              "50 GB 云存储空间",
             ]}
           />
           <Plan
             name="500 AInnotations"
-            discountedPrice="$4.9"
+            discountedPrice="$4.99"
             price="$15"
-            description="限时圣诞折扣：50% OFF"
+            description="限时新年折扣：50% OFF"
             target="_blank"
             tag={"热销"}
             onButtonClick={() => checkOut()}
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",
-              "50 GB 云存储空间",
               "自动 PDF 全文批注（即将上线）",
             ]}
           />
@@ -236,15 +206,14 @@ export function Pricing({ user }) {
             featured
             name="2000 AInnotations"
             price="$20"
-            discountedPrice="$9.8"
-            description="限时圣诞折扣：50% OFF"
+            discountedPrice="$9.99"
+            description="限时新年折扣：50% OFF"
             tag={"性价比最高"}
             target={"_blank"}
             onButtonClick={() => checkOut()}
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",
-              "50 GB 云存储空间",
               "自动 PDF 全文批注（即将上线）",
             ]}
           />

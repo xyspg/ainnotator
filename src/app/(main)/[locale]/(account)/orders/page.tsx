@@ -27,7 +27,6 @@ export default async function Page() {
     .eq('category', 'Top Up')
     .order("created_at", { ascending: false });
 
-  console.log(orders);
   if (orders?.length === 0) {
     return (
       <>

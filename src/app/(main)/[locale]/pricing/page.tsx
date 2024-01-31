@@ -12,7 +12,6 @@ export default async function PricingPage() {
     data: { user },
   } = await supabase.auth.getUser();
   const products = await lemon.getProducts()
-  console.log(products)
   return (
     <>
       <Pricing user={user} />

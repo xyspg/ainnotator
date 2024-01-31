@@ -22,11 +22,17 @@ export default async function Page() {
     .select("*")
     .eq("referer_id", user?.id);
 
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("referer_code")
+    .eq("id", user?.id)
+    .single()
+
   /**
    * Get User Refer Link
    * If not exist, create one
    */
-  referLink = user?.user_metadata.referer_code
+  referLink = userData?.referer_code;
   if (!referLink) {
     console.log("updating referer code");
     const generatedRefererCode = randomNanoID();
@@ -44,24 +50,27 @@ export default async function Page() {
 
   /**
    * Get Referee Spendings
+   * 这里换成lemon了得把数据来源改一下，换成lemon的webhook callback
+   * 单位为 cent
    */
   const { data: spending, error: spendingError } = await supabase
-    .from("orders")
-    .select("real_payment_amount")
+    .from("lemon_squeezy_webhook_data")
+    .select("*")
     .in("user_id", data!.map((referral) => referral.referee_id))
-    .eq("status", "completed");
+
+  console.log("spending", spending);
 
   const totalRefereeSpending = spending?.reduce(
-    (acc, curr) => acc + curr.real_payment_amount,
+    (acc, curr) => acc + curr.total,
     0,
   );
 
   /**
-   * Convert CNY to USD
+   * Convert cent to USD
    */
   const toUSD = (amt: number) => {
     // 2 digit
-    return (amt / 7).toFixed(2);
+    return (amt / 100).toFixed(2);
   };
 
 

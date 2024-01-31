@@ -5,6 +5,7 @@
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { createClient as cookieClient } from "@/lib/supabase/server";
+import { randomNanoID } from "@/lib/utils";
 
 export async function POST(request: Request) {
   console.log("ROUTE TRIGGERED");
@@ -17,6 +18,7 @@ export async function POST(request: Request) {
       status: 401,
     });
   }
+
   if (credential !== "0d00Onani") {
     return new Response("Invalid credential", {
       status: 401,
@@ -27,6 +29,25 @@ export async function POST(request: Request) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
   );
+
+  /**
+   * Add referer code, if not
+   */
+  const { data: noRefererUser, error: noRefererError } = await supabase
+    .from('users')
+    .select('*')
+    .is('referer_code', null)
+
+  if (noRefererUser) {
+    for (const user of noRefererUser) {
+      const refererCode = randomNanoID();
+      const {error: updateError} = await supabase
+        .from('users')
+        .update({referer_code: refererCode})
+        .eq('id', user.id)
+    }
+  }
+
   const { data: unTrackedUsers, error } = await supabase
     .from("users")
     .select("*")
