@@ -137,12 +137,13 @@ function Plan(
 }
 
 export function Pricing({ user }) {
+    const router = useRouter()
   /**
    * 处理购买逻辑，跳转到支付页面
    */
    function checkOut() {
     if (!user) {
-      toast("请先登录哦");
+      router.push("/signup")
       return;
     }
     const url = process.env.NEXT_PUBLIC_STORE_URL
