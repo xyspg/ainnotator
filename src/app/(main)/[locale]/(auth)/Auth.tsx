@@ -7,8 +7,9 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/app/store";
-import {nanoid} from "nanoid";
-import {randomNanoID} from "@/lib/utils";
+import { nanoid } from "nanoid";
+import { randomNanoID } from "@/lib/utils";
+import {useLocale, useTranslations} from "next-intl";
 
 export const AuthModal = ({
   showModal,
@@ -19,7 +20,9 @@ export const AuthModal = ({
 }) => {
   const supabase = createClient();
   const router = useRouter();
-
+  const t = useTranslations();
+  const locale = useLocale()
+  console.log(t);
 
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
@@ -46,7 +49,7 @@ export const AuthModal = ({
               <p className="py-6 text-center text-sm text-slate-400">
                 点击登录或注册，即同意{" "}
                 <Link
-                    data-umami-event="click_terms_from_signin"
+                  data-umami-event="click_terms_from_signin"
                   href="/terms-of-use"
                   target="_blank"
                   className="group underline"
@@ -56,7 +59,7 @@ export const AuthModal = ({
                 </Link>{" "}
                 和{" "}
                 <Link
-                    data-umami-event="click_privacy_policy_from_signin"
+                  data-umami-event="click_privacy_policy_from_signin"
                   href="/privacy"
                   target="_blank"
                   className="group underline"

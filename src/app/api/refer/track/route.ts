@@ -54,6 +54,7 @@ export async function POST(request: Request) {
     });
   }
 
+
   /**
    * Update user metadata
    */

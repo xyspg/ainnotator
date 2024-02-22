@@ -2,7 +2,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import Uploader from "@/app/components/Uploader";
-import { Header } from "@/app/components/Header";
 import { Hero } from "@/app/(landing_page)/components/Hero";
 import { PrimaryFeatures } from "@/app/(landing_page)/components/PrimaryFeatures";
 import { SecondaryFeatures } from "@/app/(landing_page)/components/SecondaryFeatures";
@@ -24,12 +23,11 @@ export function HomePage() {
     const cookieShown = metaData.cookie_shown;
 
     const handleModalClose = () => {
-        console.log("closed");
         setMetaData({ ...metaData, cookie_shown: true });
     };
     return (
         <main>
-            <main>
+            <div>
                 <Hero />
                 <PrimaryFeatures />
                 <SecondaryFeatures />
@@ -42,7 +40,7 @@ export function HomePage() {
                         <CookiePrompter onCookieClose={handleModalClose} />
                     )}
                 </ClientOnly>
-            </main>
+            </div>
             <Footer />
         </main>
     );

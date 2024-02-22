@@ -44,16 +44,7 @@ export default async function RootLayout({
     locale: string;
   };
 }) {
-  const cookieStore = cookies();
-  const supabase = createClient(cookieStore);
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-  const { data: credit } = await supabase
-    .from("users")
-    .select("ainnotation_credit")
-    .eq("id", user?.id);
+
 
   return (
     <html lang={locale}>
@@ -74,7 +65,6 @@ export default async function RootLayout({
       >
         <Providers>
           <MantineProvider>
-            <Header user={user} credit={credit?.[0].ainnotation_credit} />
             {children}
           </MantineProvider>
           <Analytics />
