@@ -158,6 +158,7 @@ async function createPayment(user, amount, money, isDesktop) {
 
     if (!user) {
         toast('请先登录')
+        return 
     }
     function generateTradeNo() {
         return `${Date.now()}${Math.floor(Math.random() * 1000)}`

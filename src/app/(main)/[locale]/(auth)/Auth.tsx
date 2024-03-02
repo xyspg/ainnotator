@@ -76,6 +76,7 @@ export const AuthModal = ({
                 additionalData={{
                   referer_code: randomNanoID(),
                 }}
+                redirectTo={process.env.NEXT_PUBLIC_SITE_URL}
                 localization={{
                   variables: {
                     sign_up: {
