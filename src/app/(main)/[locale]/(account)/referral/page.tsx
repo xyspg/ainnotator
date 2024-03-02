@@ -58,7 +58,6 @@ export default async function Page() {
     .select("*")
     .in("user_id", data!.map((referral) => referral.referee_id))
 
-  console.log("spending", spending);
 
   const totalRefereeSpending = spending?.reduce(
     (acc, curr) => acc + curr.total,
@@ -81,7 +80,7 @@ export default async function Page() {
         <h1 className="text-3xl mb-6">Referrals</h1>
         <p>新用户注册，送免费 50 次 AInnotations</p>
         <p>朋友受邀注册，双方各“再”得免费 50 AInnotations</p>
-        <p>邀请的朋友购买订单，返现 20%（满 $20 即可提现）</p>
+        {/*<p>邀请的朋友购买订单，返现 20%（满 $20 即可提现）</p>*/}
       </div>
       <div className="">
         <h2>Share your referral link</h2>
@@ -93,10 +92,10 @@ export default async function Page() {
         <p className="text-sm">
           {refereeCount! * 50} Free Ainnotations Received (Maximum 1000)
         </p>
-        <p className="text-sm">
-          Earn 20% cashback when your friends purchases. Currently $
-          {toUSD(totalRefereeSpending! * 0.2)} (Payout at $20){" "}
-        </p>
+        {/*<p className="text-sm">*/}
+        {/*  Earn 20% cashback when your friends purchases. Currently $*/}
+        {/*  {toUSD(totalRefereeSpending! * 0.2)} (Payout at $20){" "}*/}
+        {/*</p>*/}
 
         {data?.map((referral) => (
           <React.Fragment key={referral.id}>
