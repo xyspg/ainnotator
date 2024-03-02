@@ -124,7 +124,6 @@ function MobileNavigation({ user }) {
 
 export function Header({ user, credit }) {
   const [modalOpen, setModalOpen] = useState(false);
-  const router = useRouter();
   return (
     <>
       <header className="py-10">
