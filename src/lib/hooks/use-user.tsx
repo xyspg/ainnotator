@@ -1,33 +1,29 @@
-import { useState, useEffect } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { User } from "@supabase/supabase-js";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import useSWR from "swr";
 
-export const useUser = () => {
-  const supabase = createClient();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const supabase = createClientComponentClient();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        setLoading(true);
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
+const fetchUser = async () => {
+  const { data, error } = await supabase.auth.getUser();
 
-        if (error) {
-          throw error;
-        }
-        setUser(user);
-      } catch (error: any) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUser();
-  }, []);
+  if (error) {
+    throw new Error(error.message);
+  }
 
-  return { user, loading, error };
+  return data.user;
 };
+
+function useUser() {
+  const { data: user, error, isValidating } = useSWR('user', fetchUser, {
+    shouldRetryOnError: false,
+    revalidateOnFocus: true,
+  });
+
+  return {
+    user,
+    loading: !user && isValidating,
+    error,
+  };
+}
+
+export default useUser;
