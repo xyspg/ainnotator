@@ -124,7 +124,7 @@ export async function renderPdf(
         Type: "Annot",
         Subtype: "Highlight",
         Rect: coords,
-        C: [1, 0.64, 0],
+        C: [0.95, 0.81, 0.43],
         QuadPoints: QuadPoints,
       });
       page.drawText("");

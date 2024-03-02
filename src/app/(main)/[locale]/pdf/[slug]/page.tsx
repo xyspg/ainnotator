@@ -6,7 +6,7 @@ import { S3 } from "@/app/api/s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { createClient } from "@/lib/supabase/client";
 import { IHighlight } from "@/lib/react-pdf-highlighter";
-import {ClientOnly} from "@/lib/clientOnly";
+import { ClientOnly } from "@/lib/clientOnly";
 
 const Bucket = process.env.R2_BUCKET || "";
 

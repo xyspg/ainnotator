@@ -1,4 +1,6 @@
 "use client";
+import useWindowSize from "@/lib/hooks/use-window-size";
+
 import clsx from "clsx";
 import React, { useState } from "react";
 import { Button } from "../components/Button";
@@ -7,6 +9,7 @@ import PaymentDialog from "@/app/(main)/[locale]/pricing/PaymentDialog";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { PRODUCTS } from "@/lib/constant";
+import crypto from "crypto";
 
 function SwirlyDoodle({ className }) {
   return (
@@ -51,6 +54,7 @@ function CheckIcon({ className }) {
   );
 }
 
+
 function Plan(
   {
     name,
@@ -64,6 +68,7 @@ function Plan(
     tagColor = "green",
     target = "_self",
     onButtonClick,
+      onAliPayButtonClick,
   },
   ...props
 ) {
@@ -120,6 +125,18 @@ function Plan(
           </li>
         ))}
       </ul>
+        <Button
+            data-umami-event={`click_${name}_plan_for_${price}_alipay`}
+            href={href}
+            target={target}
+            onClick={onAliPayButtonClick}
+            variant={featured ? "solid" : "outline"}
+            color="white"
+            className="mt-8"
+            aria-label={`Get started with the ${name} plan for ${price}`}
+        >
+            使用支付宝支付
+        </Button>
       <Button
         data-umami-event={`click_${name}_plan_for_${price}`}
         href={href}
@@ -127,21 +144,71 @@ function Plan(
         onClick={onButtonClick}
         variant={featured ? "solid" : "outline"}
         color="white"
-        className="mt-8"
+        className="mt-2"
         aria-label={`Get started with the ${name} plan for ${price}`}
       >
-        Get started
+        Pay with Credit Card
       </Button>
+
     </section>
   );
 }
 
+async function createPayment(user, amount, money, isDesktop) {
+
+    function generateTradeNo() {
+        return `${Date.now()}${Math.floor(Math.random() * 1000)}`
+    }
+
+    const url = 'https://www.ezfp.cn/submit.php'
+    const merchantKey = process.env.NEXT_PUBLIC_EASY_PAYMENT_KEY
+    const outTradeNo = generateTradeNo()
+    const requestData = {
+        pid: '3078',
+        type: 'alipay',
+        device: isDesktop ? 'pc' : 'mobile',
+        out_trade_no: outTradeNo,
+        notify_url: process.env.NEXT_PUBLIC_SITE_URL + '/api/webhook/easypay',
+        name: `${amount} AInnotation`,
+        money: money,
+        param: user?.id,
+        return_url: process.env.NEXT_PUBLIC_SITE_URL
+    };
+
+    async function createOrder(amount) {
+        await fetch('/api/order/add', {
+            method: 'POST',
+            body: JSON.stringify({
+                productId: PRODUCTS.find(p => p.amount === amount).id,
+                orderId: outTradeNo,
+            }),
+        });
+    }
+
+    await createOrder(amount)
+
+
+    function generateSignature(params, key) {
+        const sortedParams = Object.keys(params).sort().reduce((r, k) => ({...r, [k]: params[k]}), {});
+        const queryString = Object.entries(sortedParams).map(([k, v]) => `${k}=${v}`).join('&');
+        const hash = crypto.createHash('md5').update(`${queryString}${key}`).digest('hex');
+        return hash;
+    }
+
+    const signature = generateSignature(requestData, merchantKey);
+    const payUrl = `${url}?${new URLSearchParams({...requestData, sign: signature, sign_type: 'MD5'})}`;
+    console.log(payUrl);
+    window.location.href = payUrl;
+}
+
 export function Pricing({ user }) {
     const router = useRouter()
-  /**
+    const { isDesktop } = useWindowSize();
+
+    /**
    * 处理购买逻辑，跳转到支付页面
    */
-   function checkOut() {
+   function lemonCheckOut() {
     if (!user) {
       router.push("/signup")
       return;
@@ -196,7 +263,8 @@ export function Pricing({ user }) {
             description="限时新年折扣：50% OFF"
             target="_blank"
             tag={"热销"}
-            onButtonClick={() => checkOut()}
+            onButtonClick={() => lemonCheckOut()}
+            onAliPayButtonClick={() => createPayment(user, 500, 0.01, isDesktop)}
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",
@@ -211,7 +279,8 @@ export function Pricing({ user }) {
             description="限时新年折扣：50% OFF"
             tag={"性价比最高"}
             target={"_blank"}
-            onButtonClick={() => checkOut()}
+            onButtonClick={() => lemonCheckOut()}
+            onAliPayButtonClick={() => createPayment(user, 2000, 70, isDesktop)}
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",

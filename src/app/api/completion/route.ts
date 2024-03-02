@@ -9,16 +9,17 @@ import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-if (!process.env.OPENAI_API_KEY) {
+if (!process.env.OPENAI_API_KEY || !process.env.OPENAI_KEYS) {
   throw new Error("OPENAI_API_KEY not set");
 }
 
 const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
 // Create an OpenAI API client (that's edge friendly!)
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  baseURL,
-});
+const openaiKeys = JSON.parse(process.env.OPENAI_KEYS)
+
+function parseEnv(env: string) {
+  return Object.entries(env).map(([url, key]) => ({ url, key }))
+}
 
 // Set the runtime to edge for best performance
 export const runtime = "edge";
@@ -165,10 +166,27 @@ export async function POST(req: Request) {
     }
   }
 
-  /** Use OpenAI
-   *
-   */
-  async function OpenAICompletion() {
+  async function failSafeOpenAI(index = 0) {
+    const openAIKeyPairs = parseEnv(openaiKeys)
+    if (index >= openAIKeyPairs.length) {
+      return new Response("There is a server-side error", { status: 500 })
+    }
+    const { url, key } = openAIKeyPairs[index]
+    console.log("using ", url, key)
+    try {
+      return await OpenAICompletion(key, url)
+    } catch (error: any) {
+      console.error("trying endpoint", url, "error with ", error.message)
+      return failSafeOpenAI(index + 1)
+    }
+  }
+
+  async function OpenAICompletion(key: string, base: string) {
+    const openai = new OpenAI({
+      apiKey: key,
+      baseURL: base,
+    });
+
     return openai.chat.completions.create({
       model,
       stream: true,
@@ -212,7 +230,7 @@ export async function POST(req: Request) {
     return new StreamingTextResponse(stream);
   } catch (e) {
     console.error(e);
-    const openAIResponse = await OpenAICompletion();
+    const openAIResponse = await failSafeOpenAI();
     const stream = OpenAIStream(openAIResponse, {
       onFinal: async resp => {
         await insertRecord(resp, "gpt-3.5-turbo");

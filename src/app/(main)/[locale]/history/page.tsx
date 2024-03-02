@@ -20,7 +20,6 @@ export default async function Page() {
     .from("uploads")
     .select("created_at, filename, file_id")
     .eq("user_id", user?.user?.id);
-  console.log(data);
 
   return (
     <div className="p-28 flex flex-row gap-4">
