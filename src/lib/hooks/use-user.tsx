@@ -16,7 +16,7 @@ const fetchUser = async () => {
 export function useUser() {
   const { data: user, error, isValidating } = useSWR('user', fetchUser, {
     shouldRetryOnError: false,
-    revalidateOnFocus: true,
+    revalidateOnFocus: false,
   });
 
   return {
