@@ -6,7 +6,6 @@ const Page = () => {
     useEffect(() => {
         async function fetchres() {
             const response = await batchAnnotate('https://arxiv.org/pdf/2309.09176.pdf')
-            console.log(response);
         }
         fetchres();
     }, []);

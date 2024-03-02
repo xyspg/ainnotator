@@ -30,20 +30,19 @@ export default async function Page({ params }: { params: { slug: string } }) {
   }
 
   return (
-    <ClientOnly>
+    <>
       <PDF
         pdf={src}
         annotation={annotation[0].annotations}
         filename={annotation[0].filename}
       />
-    </ClientOnly>
+    </>
   );
 }
 
 async function getAnnotation(id: string) {
   const supabase = createClient(cookies());
   const { data: { user } } = await supabase.auth.getUser();
-  console.log(user);
   const { data, error } = await supabase
     .from("uploads")
     .select("annotations, filename")

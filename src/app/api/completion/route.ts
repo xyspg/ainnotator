@@ -230,6 +230,7 @@ export async function POST(req: Request) {
     return new StreamingTextResponse(stream);
   } catch (e) {
     console.error(e);
+    console.log("Fall back to OpenAI")
     const openAIResponse = await failSafeOpenAI();
     const stream = OpenAIStream(openAIResponse, {
       onFinal: async resp => {

@@ -8,7 +8,6 @@ import { useUser } from "@/lib/hooks/use-user";
 
 export function RefererLinkCopier({ link }: { link: string }) {
     const { user } = useUser();
-    console.log(user);
     return (
     <>
         <Toaster />

@@ -10,6 +10,5 @@ export async function POST(request: Request) {
     data: { user },
 
   } = await supabase.auth.getUser();
-  console.log(user);
   return new Response(JSON.stringify(user), { status: 200 });
 }

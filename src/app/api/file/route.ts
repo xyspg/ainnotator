@@ -103,7 +103,6 @@ export async function POST(req: Request): Promise<Response> {
   } catch (err: any) {
     return new Response(err.message, { status: 500 });
   }
-  console.log(user.email);
 
   const { error: insertionError } = await supabase.from("uploads").insert({
     user_id: userId,
