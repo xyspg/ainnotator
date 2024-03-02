@@ -24,13 +24,9 @@ export default async function LocaleLayout({
     data: { user },
     error,
   } = await supabase.auth.getUser();
-  const { data: credit } = await supabase
-    .from("users")
-    .select("ainnotation_credit")
-    .eq("id", user?.id);
   return (
     <NextIntlClientProvider messages={messages}>
-      <Header user={user} credit={credit?.[0].ainnotation_credit} />
+      <Header user={user} />
       {children}
     </NextIntlClientProvider>
   );
