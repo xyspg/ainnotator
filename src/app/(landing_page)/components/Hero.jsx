@@ -13,7 +13,7 @@ import logoTransistor from "../images/logos/transistor.svg";
 import logoTuple from "../images/logos/tuple.svg";
 
 import { Auth } from "@/app/(main)/[locale]/(auth)/Auth";
-import useUser from "@/lib/hooks/use-user";
+import { useUser } from "@/lib/hooks/use-user";
 import {
   AlertDialog,
   AlertDialogAction,
