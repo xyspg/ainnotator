@@ -35,7 +35,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const lexend = Lexend({ subsets: ["latin"] });
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
   params: { locale },
 }: {
@@ -44,8 +44,6 @@ export default async function RootLayout({
     locale: string;
   };
 }) {
-
-
   return (
     <html lang={locale}>
       <Script
