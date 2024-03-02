@@ -13,7 +13,7 @@ const fetchUser = async () => {
   return data.user;
 };
 
-function useUser() {
+export function useUser() {
   const { data: user, error, isValidating } = useSWR('user', fetchUser, {
     shouldRetryOnError: false,
     revalidateOnFocus: true,
@@ -25,5 +25,3 @@ function useUser() {
     error,
   };
 }
-
-export default useUser;
