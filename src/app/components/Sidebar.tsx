@@ -3,6 +3,9 @@ import { Button, CardHeader, Progress } from "@nextui-org/react";
 import type { IHighlight } from "@/lib/react-pdf-highlighter";
 import { Card, CardBody, CardFooter, Divider } from "@nextui-org/react";
 import { CreditIndicator } from "@/app/components/credit-indicator";
+import clsx from "clsx";
+import {Pencil1Icon} from "@radix-ui/react-icons";
+import {Textarea} from "@/app/components/ui/textarea";
 
 interface Props {
   highlights: Array<IHighlight>;
@@ -20,24 +23,36 @@ const updateHash = (highlight: IHighlight) => {
 };
 
 export function Sidebar({
-  highlights,
-  toggleDocument,
-  resetHighlights,
-  completion,
-  loading,
-  onAddAnnotation,
-  onRemove,
-  onRender,
-}: Props) {
+                          highlights,
+                          toggleDocument,
+                          resetHighlights,
+                          completion,
+                          loading,
+                          onAddAnnotation,
+                          onRemove,
+                          onRender,
+                        }: Props) {
   const [isCardVisible, setIsCardVisible] = useState(true);
   const [textSelection, setTextSelection] = useState<string>("");
-  const [originalText, setOriginalText] = useState<string>(completion);
+  const [selectedIndices, setSelectedIndices] = useState<any>([]);
+  const [enterOwn, setEnterOwn] = useState(false);
+  const [ownContent, setOwnContent] = useState("");
+
   const handleAddAnnotation = () => {
     // Toggle the visibility of the card
     setIsCardVisible(false);
 
+    if (enterOwn) {
+      onAddAnnotation(ownContent);
+      setOwnContent("")
+      setEnterOwn(false)
+      return;
+    }
+
     if (textSelection) {
       onAddAnnotation(textSelection);
+      setTextSelection("")
+      setSelectedIndices([])
       return;
     }
 
@@ -45,6 +60,8 @@ export function Sidebar({
     onAddAnnotation(null);
   };
 
+
+  ;
   /**
    * 在 completion 变化时，将卡片设置为可见
    */
@@ -53,16 +70,28 @@ export function Sidebar({
     setIsCardVisible(true);
   }, [completion]);
 
-  /**
-   * 自定义批注，响应 MouseUp 事件
-   * 将选中的文本保存到 textSelection 中
-   */
-  const handleMouseUp = () => {
-    const selection = window.getSelection()?.toString();
-    if (selection && selection.trim() !== "") {
-      setTextSelection(selection);
+
+  const textNodes = completion.split(" ");
+  useEffect(() => {
+    // Construct the text selection string based on selected indices
+    const selectionString = selectedIndices
+      .sort((a: number, b: number) => a - b)
+      .map((index: number) => textNodes[index])
+      .join(" ");
+    setTextSelection(selectionString);
+  }, [selectedIndices, textNodes]);
+
+  const handleWordClick = (index: number) => {
+    if (enterOwn) {
+      return;
+    }
+    const currentIndex = selectedIndices.indexOf(index);
+    if (currentIndex !== -1) {
+      // If the word is already selected, deselect it
+      setSelectedIndices(selectedIndices.filter((i: number) => i !== index));
     } else {
-      setTextSelection(originalText)
+      // Add the word to the selection
+      setSelectedIndices([...selectedIndices, index]);
     }
   };
 
@@ -94,6 +123,7 @@ export function Sidebar({
           </CardBody>
         </Card>
       )}
+      {/*Haven't started annotating*/}
       {!isCardVisible ||
         (!completion && !loading && (
           <p className="p-8 font-medium text-black">
@@ -102,18 +132,32 @@ export function Sidebar({
         ))}
       {completion && isCardVisible && (
         <Card className="mx-2">
-          <CardBody
-            onMouseUp={handleMouseUp}
-            data-tg-tour="<span>Select some text to create partial ainnotation</span>"
-          >
-            {completion}
+          <CardBody className="">
+            <div className="p-1">
+              <p className='underline flex items-center flex-row gap-1 pb-4' onClick={()=>{setEnterOwn(e => !e)}}><Pencil1Icon />Click to Enter Own Content</p>
+              {enterOwn && <Textarea className='mb-4 mt-1' value={ownContent} onChange={(event => setOwnContent(event.target.value))} />}
+              <ul className="flex flex-wrap flex-row gap-1.5">
+                {textNodes.map((node, index) => (
+                  <li
+                    key={index}
+                    className={clsx(
+                      "bg-slate-100 rounded-md px-1 py-0.5 shadow-2xl cursor-pointer",
+                      selectedIndices.includes(index) ? "bg-slate-300" : "",
+                    )}
+                    onClick={() => handleWordClick(index)}
+                  >
+                    {node}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </CardBody>
           <Divider />
           {completion && !loading && (
             <div className="p-4 flex flex-col gap-2">
-                <Button color="secondary" onClick={handleAddAnnotation}>
-                  {textSelection ? 'Add Custom Annotation' : 'Add Annotation'}
-                </Button>
+              <Button color="secondary" onClick={handleAddAnnotation}>
+                {"Add Annotation"}
+              </Button>
             </div>
           )}
         </Card>
