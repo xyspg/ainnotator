@@ -10,7 +10,6 @@ import toast, { Toaster } from "react-hot-toast";
 export function CustomPrompt({ prompt }: { prompt: string }) {
   const [checked, setChecked] = useState(!!prompt);
   const [promptValue, setPromptValue] = useState(prompt);
-  console.log(promptValue);
   const handleSubmit = async () => {
     await fetch(`/api/settings`, {
       method: "POST",

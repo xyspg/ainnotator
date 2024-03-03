@@ -122,7 +122,7 @@ function MobileNavigation({ user }) {
   );
 }
 
-export function Header({ user, credit }) {
+export function Header({ user }) {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <>

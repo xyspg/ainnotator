@@ -22,7 +22,7 @@ export const AuthModal = ({
   const router = useRouter();
   const t = useTranslations();
   const locale = useLocale()
-  
+
 
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
