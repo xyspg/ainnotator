@@ -126,6 +126,8 @@ export default function AuthModalPage() {
               }}
             />
             {/*<Input placeholder="或输入邮件地址" />*/}
+            <p className='text-xs py-1 font-light'>使用您的教育邮箱 (.edu) 注册可能无法收到邮件。请使用 Gmail
+              等邮件提供商。</p>
           </div>
         </div>
       </div>

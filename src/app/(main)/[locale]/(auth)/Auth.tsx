@@ -11,6 +11,8 @@ import { nanoid } from "nanoid";
 import { randomNanoID } from "@/lib/utils";
 import {useLocale, useTranslations} from "next-intl";
 import {useSWRConfig} from "swr";
+import {useEffect} from "react";
+import toast, {Toaster} from "react-hot-toast";
 
 export const AuthModal = ({
   showModal,
@@ -36,6 +38,7 @@ export const AuthModal = ({
   });
   return (
     <>
+      <Toaster />
       <Modal showModal={showModal} setShowModal={setShowModal}>
         <div className="w-full overflow-hidden shadow-xl md:max-w-3xl md:rounded-2xl md:border md:border-gray-200">
           <div className="flex flex-row justify-between">
@@ -128,6 +131,7 @@ export const AuthModal = ({
                 }}
               />
               {/*<Input placeholder="或输入邮件地址" />*/}
+              <p className='text-xs py-1 font-light'>使用您的教育邮箱 (.edu) 注册可能无法收到邮件。请使用 Gmail 等邮件提供商。</p>
             </div>
           </div>
         </div>
