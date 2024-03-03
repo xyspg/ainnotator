@@ -93,7 +93,7 @@ export async function POST(req: Request): Promise<Response> {
     Body,
   });
 
-  if (Body.length > 25 * 1024 ** 2) {
+  if (Body.length > 32 * 1024 ** 2) {
     return new Response("Request Entity Too Large", { status: 413 });
   }
 

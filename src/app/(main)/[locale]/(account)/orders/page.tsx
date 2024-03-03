@@ -30,7 +30,7 @@ export default async function Page() {
   if (orders?.length === 0) {
     return (
       <>
-        <div className="p-32 flex flex-col gap-4">
+        <div className="p-4 md:p-32 flex flex-col gap-4">
           You have no orders.
           <Button color="primary">
             <Link href="/pricing">I Will Have Order!</Link>

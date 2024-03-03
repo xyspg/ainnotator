@@ -7,6 +7,10 @@ const sidebarNavItems = [
     href: "/orders",
   },
   {
+    title: "使用明细",
+    href: "/usage",
+  },
+  {
     title: "引荐计划",
     href: "/referral",
   },

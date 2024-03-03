@@ -10,6 +10,7 @@ import { useUserStore } from "@/app/store";
 import { nanoid } from "nanoid";
 import { randomNanoID } from "@/lib/utils";
 import {useLocale, useTranslations} from "next-intl";
+import {useSWRConfig} from "swr";
 
 export const AuthModal = ({
   showModal,
@@ -22,11 +23,13 @@ export const AuthModal = ({
   const router = useRouter();
   const t = useTranslations();
   const locale = useLocale()
+  const { mutate } = useSWRConfig()
 
 
   supabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN") {
       setShowModal();
+      mutate('user')
       // updateUser(session?.user)
       router.refresh();
     }
@@ -77,6 +80,7 @@ export const AuthModal = ({
                 additionalData={{
                   referer_code: randomNanoID(),
                 }}
+                view="magic_link"
                 localization={{
                   variables: {
                     sign_up: {

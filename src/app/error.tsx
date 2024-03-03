@@ -4,9 +4,9 @@ import { Footer } from "@/app/(landing_page)/components/Footer";
 import { Button } from "@nextui-org/react";
 
 const Error = ({
-  error,
-  reset,
-}: {
+                 error,
+                 reset,
+               }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) => {

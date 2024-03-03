@@ -1,4 +1,4 @@
-import { createClient} from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import useSWR from "swr";
 
 const supabase = createClient();
@@ -10,7 +10,6 @@ const fetchUser = async () => {
     throw new Error(error.message);
   }
 
-  console.log(data.user)
   return data.user;
 };
 

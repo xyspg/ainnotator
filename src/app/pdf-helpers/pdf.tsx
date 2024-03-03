@@ -20,6 +20,7 @@ import Loading from "@/app/components/Loading";
 import { Sidebar } from "@/app/components/Sidebar";
 import toast, { Toaster } from "react-hot-toast";
 import { Button, Card, CardBody } from "@nextui-org/react";
+import { useSWRConfig } from "swr"
 
 import React, { useCallback, useEffect, useState, useRef } from "react";
 
@@ -62,7 +63,13 @@ export const PDF = ({
   const [position, setPosition] = useState<Position>();
   const pathname = usePathname();
   const uuid = pathname.split("/")[2];
+  const { mutate } = useSWRConfig()
 
+  useEffect(() => {
+    if (!isLoading) {
+      mutate('/api/credit')
+    }
+  }, [isLoading]);
   /**
    * 保存批注
    */

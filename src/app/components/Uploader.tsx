@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useUser } from "@/lib/hooks/use-user";
 import { useRouter } from "next/navigation";
 import { Dropzone, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
 import { Group, rem, Text } from "@mantine/core";
@@ -13,19 +14,8 @@ import {AuthModal} from "@/app/(main)/[locale]/(auth)/Auth";
 export default function Uploader() {
   const [fileUUID, setFileUUID] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLogged, setIsLogged] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const supabase = createClient()
-  useEffect(() => {
-    async function getUser() {
-      const { data: { user }} = await supabase.auth.getUser();
-      if (user) {
-        setIsLogged(true);
-      }
-    }
-    getUser();
-
-  }, []);
+  const { user } = useUser()
 
   const router = useRouter();
   const t = useTranslations("Hero");
@@ -81,7 +71,7 @@ export default function Uploader() {
       <AuthModal showModal={modalOpen} setShowModal={()=>{setModalOpen(false)}} />
       <Dropzone
         onDrop={(file) => {
-          if (!isLogged) {
+          if (!user) {
             toast("Please log in first.");
             setModalOpen(true)
             return;

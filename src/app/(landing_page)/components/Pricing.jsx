@@ -158,6 +158,7 @@ async function createPayment(user, amount, money, isDesktop) {
 
     if (!user) {
         toast('请先登录')
+        return
     }
     function generateTradeNo() {
         return `${Date.now()}${Math.floor(Math.random() * 1000)}`
@@ -244,7 +245,7 @@ export function Pricing({ user }) {
             哦，感谢您的支持！
           </h2>
           <p className="mt-4 text-lg text-slate-400">
-            AInnotator 需要负担高昂的服务器、云存储 成本，LLM API 成本，如果
+            AInnotator 需要负担高昂的服务器、云存储成本，LLM API 成本，如果
             AInnotator 有帮助到您，请考虑付费使用。
           </p>
         </div>
@@ -267,11 +268,11 @@ export function Pricing({ user }) {
             target="_blank"
             tag={"热销"}
             onButtonClick={() => lemonCheckOut()}
-            onAliPayButtonClick={() => createPayment(user, 500, 0.1, isDesktop)}
+            onAliPayButtonClick={() => createPayment(user, 500, 29.9, isDesktop)}
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",
-              "自动 PDF 全文批注（即将上线）",
+              "Email Support",
             ]}
           />
           <Plan
@@ -287,7 +288,7 @@ export function Pricing({ user }) {
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",
-              "自动 PDF 全文批注（即将上线）",
+              "Email Support",
             ]}
           />
         </div>

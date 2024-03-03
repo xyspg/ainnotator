@@ -16,8 +16,8 @@ import { useRouter } from "next/navigation";
 import { FaCoins } from "react-icons/fa";
 import { CreditIndicator } from "@/app/components/credit-indicator";
 import { UserDropdown } from "@/app/components/UserDropdown";
+import {useSWRConfig} from "swr";
 
-const supabase = createClient();
 
 function MobileNavLink({ href, children }) {
   return (
@@ -57,6 +57,7 @@ function MobileNavIcon({ open }) {
 function MobileNavigation({ user }) {
   const supabase = createClient();
   const router = useRouter();
+  const { mutate } = useSWRConfig()
   return (
     <Popover>
       <Popover.Button
@@ -94,6 +95,7 @@ function MobileNavigation({ user }) {
               <>
                 <h1 className="p-2">{user?.email}</h1>
                 <MobileNavLink href="/orders">Orders</MobileNavLink>
+                <MobileNavLink href="/usage">Usage</MobileNavLink>
                 <MobileNavLink href="/settings">Settings</MobileNavLink>
                 <MobileNavLink href="/referral">Referral Program</MobileNavLink>
                 <MobileNavLink href="/history">History</MobileNavLink>
@@ -106,6 +108,7 @@ function MobileNavigation({ user }) {
               <span
                 onClick={() => {
                   supabase.auth.signOut();
+                  mutate('user')
                   router.refresh();
                 }}
               >

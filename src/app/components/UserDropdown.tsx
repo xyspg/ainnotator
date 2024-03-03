@@ -16,7 +16,7 @@ import { Button } from "@/app/components/ui/button";
 import {
   Cloud,
   CreditCard,
-  Github,
+  Github, HistoryIcon,
   Keyboard,
   LifeBuoy,
   LogOut,
@@ -37,10 +37,13 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 import Link from "next/link";
 import Image from "next/image";
 import { isDev } from "@/lib/utils";
+import {FaMoneyBill} from "react-icons/fa";
+import {useSWRConfig} from "swr";
 
 export function UserDropdown({ user }: { user: SupabaseUser }) {
   const supabase = createClient();
   const router = useRouter();
+  const { mutate } = useSWRConfig()
   router.prefetch("/orders");
   router.prefetch("/settings");
   router.prefetch("/referral");
@@ -81,6 +84,11 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
               <span>Orders</span>
           </DropdownMenuItem>
           <DropdownMenuItem className='relative'>
+            <HistoryIcon className="mr-2 h-4 w-4" />
+            <Link href="/usage" className='absolute inset-0' />
+            <span>Usage</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem className='relative'>
             <Settings className="mr-2 h-4 w-4" />
             <Link href="/settings" className='absolute inset-0'/>
               <span>Settings</span>
@@ -118,6 +126,7 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
           onClick={async () => {
             await supabase.auth.signOut();
             // analytics.track("Click Sign Out Button");
+            mutate('user')
             router.refresh();
           }}
         >
