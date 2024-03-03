@@ -1,34 +1,29 @@
-'use client'
-import { createClient } from "@/lib/supabase/client";
-import {useEffect, useState} from "react";
-import {User} from "@supabase/supabase-js";
+import { createClient} from "@/lib/supabase/client";
+import useSWR from "swr";
 
-const supabase = createClient()
+const supabase = createClient();
+
+const fetchUser = async () => {
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  console.log(data.user)
+  return data.user;
+};
 
 export function useUser() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data: user, error, isValidating } = useSWR('user', fetchUser, {
+    shouldRetryOnError: false,
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  });
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase.auth.getUser();
-        if (error) {
-          throw error;
-        }
-        setUser(data.user);
-      } catch (error: any) {
-        console.error('Error fetching user:', error.message);
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUser();
-  }, []); // Empty dependency array ensures this effect only runs once after the initial render
-
-  return { user, loading, error };
+  return {
+    user,
+    loading: !user && isValidating,
+    error,
+  };
 }
