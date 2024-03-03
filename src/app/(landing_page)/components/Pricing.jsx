@@ -158,7 +158,7 @@ async function createPayment(user, amount, money, isDesktop) {
 
     if (!user) {
         toast('请先登录')
-        return 
+        return
     }
     function generateTradeNo() {
         return `${Date.now()}${Math.floor(Math.random() * 1000)}`
@@ -263,16 +263,16 @@ export function Pricing({ user }) {
           <Plan
             name="500 AInnotations"
             discountedPrice="$4.99"
-            price="$15"
+            price="$10"
             description="限时开春折扣：50% OFF"
             target="_blank"
             tag={"热销"}
             onButtonClick={() => lemonCheckOut()}
-            onAliPayButtonClick={() => createPayment(user, 500, 0.1, isDesktop)}
+            onAliPayButtonClick={() => createPayment(user, 500, 35, isDesktop)}
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",
-              "自动 PDF 全文批注（即将上线）",
+                "Email Support"
             ]}
           />
           <Plan
@@ -288,7 +288,7 @@ export function Pricing({ user }) {
             features={[
               "一键导出批注后的 PDF",
               "批注内容云端同步",
-              "自动 PDF 全文批注（即将上线）",
+                "Email Support"
             ]}
           />
         </div>

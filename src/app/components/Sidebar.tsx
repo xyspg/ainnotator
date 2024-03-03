@@ -4,6 +4,8 @@ import type { IHighlight } from "@/lib/react-pdf-highlighter";
 import { Card, CardBody, CardFooter, Divider } from "@nextui-org/react";
 import { CreditIndicator } from "@/app/components/credit-indicator";
 import clsx from "clsx";
+import {Pencil1Icon} from "@radix-ui/react-icons";
+import {Textarea} from "@/app/components/ui/textarea";
 
 interface Props {
   highlights: Array<IHighlight>;
@@ -33,10 +35,19 @@ export function Sidebar({
   const [isCardVisible, setIsCardVisible] = useState(true);
   const [textSelection, setTextSelection] = useState<string>("");
   const [selectedIndices, setSelectedIndices] = useState<any>([]);
+  const [enterOwn, setEnterOwn] = useState(false);
+  const [ownContent, setOwnContent] = useState("");
 
   const handleAddAnnotation = () => {
     // Toggle the visibility of the card
     setIsCardVisible(false);
+
+    if (enterOwn) {
+      onAddAnnotation(ownContent);
+      setOwnContent("")
+      setEnterOwn(false)
+      return;
+    }
 
     if (textSelection) {
       onAddAnnotation(textSelection);
@@ -71,6 +82,9 @@ export function Sidebar({
   }, [selectedIndices, textNodes]);
 
   const handleWordClick = (index: number) => {
+    if (enterOwn) {
+      return;
+    }
     const currentIndex = selectedIndices.indexOf(index);
     if (currentIndex !== -1) {
       // If the word is already selected, deselect it
@@ -119,7 +133,9 @@ export function Sidebar({
       {completion && isCardVisible && (
         <Card className="mx-2">
           <CardBody className="">
-            <div className="p-2">
+            <div className="p-1">
+              <p className='underline flex items-center flex-row gap-1 pb-4' onClick={()=>{setEnterOwn(e => !e)}}><Pencil1Icon />Click to Enter Own Content</p>
+              {enterOwn && <Textarea className='mb-4 mt-1' value={ownContent} onChange={(event => setOwnContent(event.target.value))} />}
               <ul className="flex flex-wrap flex-row gap-1.5">
                 {textNodes.map((node, index) => (
                   <li
