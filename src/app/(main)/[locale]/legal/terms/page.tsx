@@ -16,6 +16,10 @@ export default function Page() {
         Customer&apos;s internal business purposes and to the features and
         functionality specified in the Order.
       </p>
+      <p>
+        This is not a cloud service. Please do not use AInnotator as a cloud storage service.
+        We may delete your PDFs and annotations in certain months and we are not responsible for any loss of data.
+      </p>
     </article>
   );
 }

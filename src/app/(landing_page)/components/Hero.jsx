@@ -13,6 +13,8 @@ import logoTransistor from "../images/logos/transistor.svg";
 import logoTuple from "../images/logos/tuple.svg";
 
 import { Auth } from "@/app/(main)/[locale]/(auth)/Auth";
+import { useUser } from "@/lib/hooks/use-user";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,10 +29,13 @@ import {
 import { isDev } from "@/lib/utils";
 import { useMetaDataStore } from "@/app/store";
 import { ClientOnly } from "@/lib/clientOnly";
-import {CookiePrompter} from "@/app/(main)/[locale]/cookie";
+import { CookiePrompter } from "@/app/(main)/[locale]/cookie";
+import { Loader } from "@mantine/core";
+import DemoVideo from "@/app/(landing_page)/components/DemoVideo";
 
 export function Hero() {
   const t = useTranslations("Hero");
+  const { user, loading } = useUser();
 
   return (
     <Container className="pt-20 pb-16 text-center lg:pt-32">
@@ -69,8 +74,7 @@ export function Hero() {
         </Button>
       </div>
       */}
-      <Uploader />
-
+      {loading ? <Loader /> : user ? <Uploader /> : <DemoVideo />}
       {/*
       <div className="mt-36 lg:mt-44">
         <p className="font-display text-base text-slate-900">
