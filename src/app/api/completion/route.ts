@@ -227,10 +227,11 @@ export async function POST(req: Request) {
         await insertRecord(resp, "gemini-pro");
       },
     });
+    console.log("[INFO] Using Gemini");
     return new StreamingTextResponse(stream);
   } catch (e) {
     console.error(e);
-    console.log("Fall back to OpenAI")
+    console.log("[INFO] Using OpenAI");
     const openAIResponse = await failSafeOpenAI();
     const stream = OpenAIStream(openAIResponse, {
       onFinal: async resp => {

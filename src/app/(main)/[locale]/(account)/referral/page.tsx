@@ -7,9 +7,11 @@ import { Input } from "@/app/components/ui/input";
 import { RefererLinkCopier } from "@/app/(main)/[locale]/(account)/referral/referer-client";
 import {randomNanoID} from "@/lib/utils";
 import {redirect} from "next/navigation";
+import {getTranslations} from "next-intl/server";
 
 export default async function Page() {
   const cookieStore = cookies();
+  const t = await getTranslations('Settings.Referral')
   const supabase = createClient(cookieStore);
   const {
     data: { user },
@@ -77,7 +79,7 @@ export default async function Page() {
   return (
     <div className="flex flex-col gap-4">
       <div className="mb-4">
-        <h1 className="text-3xl mb-6">Referrals</h1>
+        <h1 className="text-3xl mb-6">{t('title')}</h1>
         <p>新用户注册，送免费 50 次 AInnotations</p>
         <p>朋友受邀注册，双方各“再”得免费 50 AInnotations</p>
         {/*<p>邀请的朋友购买订单，返现 20%（满 $20 即可提现）</p>*/}
@@ -88,9 +90,9 @@ export default async function Page() {
       </div>
       <Separator />
       <div className="">
-        <h2>You have already invited {refereeCount} users.</h2>
+        <h2>{t('invitation_count', { count: refereeCount})}</h2>
         <p className="text-sm">
-          {refereeCount! * 50} Free Ainnotations Received (Maximum 1000)
+          {t('ainnotation_received', { count: refereeCount! * 50})}
         </p>
         {/*<p className="text-sm">*/}
         {/*  Earn 20% cashback when your friends purchases. Currently $*/}

@@ -17,6 +17,7 @@ import { FaCoins } from "react-icons/fa";
 import { CreditIndicator } from "@/app/components/credit-indicator";
 import { UserDropdown } from "@/app/components/UserDropdown";
 import {useSWRConfig} from "swr";
+import {useTranslations} from "next-intl";
 
 
 function MobileNavLink({ href, children }) {
@@ -127,6 +128,7 @@ function MobileNavigation({ user }) {
 
 export function Header({ user }) {
   const [modalOpen, setModalOpen] = useState(false);
+  const t = useTranslations('Header')
   return (
     <>
       <header className="py-10">
@@ -139,8 +141,8 @@ export function Header({ user }) {
                 <Logo className="h-10 w-auto" />
               </Link>
               <div className="hidden md:flex md:gap-x-6">
-                <NavLink href="/history">History</NavLink>
-                <NavLink href="/pricing">Pricing</NavLink>
+                <NavLink href="/history">{t('history')}</NavLink>
+                <NavLink href="/pricing">{t('pricing')}</NavLink>
               </div>
             </div>
             <div className="flex items-center gap-x-5 md:gap-x-8">

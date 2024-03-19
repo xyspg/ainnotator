@@ -10,6 +10,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { PRODUCTS } from "@/lib/constant";
 import crypto from "crypto";
+import { useTranslations } from "next-intl";
 
 function SwirlyDoodle({ className }) {
   return (
@@ -208,6 +209,7 @@ async function createPayment(user, amount, money, isDesktop) {
 export function Pricing({ user }) {
     const router = useRouter()
     const { isDesktop } = useWindowSize();
+    const t = useTranslations('Pricing')
 
     /**
    * 处理购买逻辑，跳转到支付页面
@@ -237,12 +239,12 @@ export function Pricing({ user }) {
       <Container>
         <div className="md:text-center">
           <h2 className="font-display text-3xl tracking-tight text-white sm:text-4xl">
-            如有需要请{" "}
+              {t('title_first')}{" "}
             <span className="relative whitespace-nowrap">
               <SwirlyDoodle className="absolute top-1/2 left-0 h-[1em] w-full fill-blue-400" />
-              <span className="relative text-blue-400">购买次数</span>
+              <span className="relative text-blue-400">{t('title_middle')}</span>
             </span>{" "}
-            哦，感谢您的支持！
+              {t('title_last')}
           </h2>
           <p className="mt-4 text-lg text-slate-400">
             AInnotator 需要负担高昂的服务器、云存储成本，LLM API 成本，如果
@@ -261,7 +263,7 @@ export function Pricing({ user }) {
             ]}
           />
           <Plan
-            name="500 AInnotations"
+            name={`500 ${t('ainnotation')}`}
             discountedPrice="$4.99"
             price="$15"
             description="限时开春折扣：50% OFF"
@@ -277,7 +279,7 @@ export function Pricing({ user }) {
           />
           <Plan
             featured
-            name="2000 AInnotations"
+            name={`2000 ${t('ainnotation')}`}
             price="$20"
             discountedPrice="$9.99"
             description="限时开春折扣：50% OFF"

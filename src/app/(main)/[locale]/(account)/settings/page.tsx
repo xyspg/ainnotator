@@ -5,6 +5,7 @@ import { CustomAPIKey } from "@/app/(main)/[locale]/(account)/settings/custom-ap
 import { CustomPrompt } from "@/app/(main)/[locale]/(account)/settings/custom-prompt";
 import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
+import {getTranslations} from "next-intl/server";
 
 export const dynamic = 'force-dynamic'
 
@@ -19,7 +20,7 @@ export default async function Page() {
     .eq("id", user?.id)
     .single();
   const prompt = userPrompt?.custom_prompt;
-  console.log(prompt);
+  const t = await getTranslations('Settings')
   return (
     <>
       <div className="flex flex-col ">
@@ -31,7 +32,7 @@ export default async function Page() {
         </div>
         <div className="flex flex-col gap-6 my-8 ">
           <div className="gap-2 flex flex-col ">
-            <h3 className="text-lg font-medium">AI Preference</h3>
+            <h3 className="text-lg font-medium">{t('ai_preference')}</h3>
             <div className="text-sm text-muted-foreground dark:text-neutral-400 flex flex-col gap-4 ">
               <CustomAPIKey />
               <CustomPrompt prompt={prompt} />

@@ -1,6 +1,6 @@
 {
   "Hero": {
-    "slogan": "Get AI-Powered Annotations with Any Text-Selectable PDFs.",
+    "slogan": "Get AI-Powered Reading Helper with Any Text-Selectable PDFs.",
     "upload": "Drag PDF here or click to select files"
   },
   "PrimaryFeatures": {
@@ -45,5 +45,49 @@
         "description": "Navigate the complexities of official documents. Understand the fine print and implications with AInnotator’s clear, concise annotations."
       }
     }
+  },
+  "Pricing": {
+    "title_first": "If you need more please",
+    "title_middle": "purchase some AInnotation",
+    "title_last": ". Thank you for your support!",
+    "ainnotation": "AInnotation"
+  },
+  "Settings": {
+    "ai_preference": "AI Preference",
+    "custom_prompt": "Custom Prompt",
+    "save": "Save",
+    "Orders": {
+      "makeorder": "I Will Have Order!",
+      "empty": "You haven't made any orders yet.",
+      "created_at": "Created At",
+      "status": "Status",
+      "amount": "Amount"
+    },
+    "Usage": {
+      "time": "Time",
+      "filename": "Filename",
+      "balance": "Balance",
+      "empty": "You haven't used any AInnotations yet."
+    },
+    "Referral": {
+      "title": "Referral Program",
+      "subtitle": "New user registration, receive 50 free annotation counts\n\nFriends invited to register, both get an additional 50 free annotation counts each",
+      "share_your_referral_link": "Share your referral link",
+      "copy": "Copy",
+      "invitation_count": "You have {count, plural, =0 {not invited yet} =1 {already invited 1 friend} other {already invited # friends}}",
+      "ainnotation_received": "{count} Free AInnotations received (Maximum 1000)"
+    }
+  },
+  "UserDropDown": {
+    "order": "Order",
+    "usage": "Usage",
+    "settings": "Settings",
+    "referral": "Referral Program",
+    "support": "Support",
+    "logout": "Log Out"
+  },
+  "Header": {
+    "history": "History",
+    "pricing": "Pricing"
   }
 }
