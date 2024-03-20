@@ -39,8 +39,10 @@ import Image from "next/image";
 import { isDev } from "@/lib/utils";
 import {FaMoneyBill} from "react-icons/fa";
 import {useSWRConfig} from "swr";
+import {useTranslations} from "next-intl";
 
 export function UserDropdown({ user }: { user: SupabaseUser }) {
+  const t = useTranslations('UserDropdown')
   const supabase = createClient();
   const router = useRouter();
   const { mutate } = useSWRConfig()
@@ -81,17 +83,17 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
           <DropdownMenuItem className='relative'>
             <CreditCard className="mr-2 h-4 w-4" />
             <Link href="/orders" className='absolute inset-0' />
-              <span>Orders</span>
+              <span>{t('order')}</span>
           </DropdownMenuItem>
           <DropdownMenuItem className='relative'>
             <HistoryIcon className="mr-2 h-4 w-4" />
             <Link href="/usage" className='absolute inset-0' />
-            <span>Usage</span>
+            <span>{t('usage')}</span>
           </DropdownMenuItem>
           <DropdownMenuItem className='relative'>
             <Settings className="mr-2 h-4 w-4" />
             <Link href="/settings" className='absolute inset-0'/>
-              <span>Settings</span>
+              <span>{t('settings')}</span>
           </DropdownMenuItem>
           {/*<DropdownMenuItem>*/}
           {/*  <Keyboard className="mr-2 h-4 w-4" />*/}
@@ -104,7 +106,7 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
           <DropdownMenuItem className='relative'>
             <UserPlus className="mr-2 h-4 w-4" />
             <Link href="/referral" className='absolute inset-0' />
-              <span>Referral Program</span>
+              <span>{t('referral')}</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
@@ -115,7 +117,7 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
         <DropdownMenuItem className='relative'>
           <LifeBuoy className="mr-2 h-4 w-4" />
           <Link href="mailto:support@ainnotator.com" data-umami-event="click_support" className='absolute inset-0'/>
-          <span>Support</span>
+          <span>{t('support')}</span>
         </DropdownMenuItem>
         <DropdownMenuItem disabled>
           <Cloud className="mr-2 h-4 w-4" />
@@ -131,7 +133,7 @@ export function UserDropdown({ user }: { user: SupabaseUser }) {
           }}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span>{t('logout')}</span>
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

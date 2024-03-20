@@ -9,6 +9,7 @@ import {
   TableBody,
 } from "@/app/components/ui/table";
 import { format } from "date-fns";
+import {getTranslations} from "next-intl/server";
 
 const Page = async () => {
   const supabase = createClient(cookies());
@@ -20,19 +21,20 @@ const Page = async () => {
     .select("*")
     .eq("user_id", user?.id)
     .order("created_at", { ascending: true });
+  const t = await getTranslations('Settings.Usage')
   return (
     <>
       <div className="flex flex-col gap-2 p-1">
         <Table>
           <TableHeader>
             <TableRow className='text-medium text-2xl'>
-              <TableCell className="w-[100px]">Time</TableCell>
-              <TableCell className="w-[100px]">File Name</TableCell>
-              <TableCell className="w-[100px]">Balance</TableCell>
+              <TableCell className="w-[100px]">{t('time')}</TableCell>
+              <TableCell className="w-[100px]">{t('filename')}</TableCell>
+              <TableCell className="w-[100px]">{t('balance')}</TableCell>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {!data && <h1>Data not available.</h1>}
+            {!data && <h1>{t('empty')}</h1>}
             {data?.map((entry, idx) => (
               <TableRow key={idx}>
                 <TableCell className="w-[100px]">

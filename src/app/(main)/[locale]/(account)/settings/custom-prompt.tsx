@@ -6,10 +6,12 @@ import { useState } from "react";
 import { Textarea } from "@/app/components/ui/textarea";
 import { Button } from "@/app/components/ui/button";
 import toast, { Toaster } from "react-hot-toast";
+import {useTranslations} from "next-intl";
 
 export function CustomPrompt({ prompt }: { prompt: string }) {
   const [checked, setChecked] = useState(!!prompt);
   const [promptValue, setPromptValue] = useState(prompt);
+  const t = useTranslations("Settings");
   const handleSubmit = async () => {
     await fetch(`/api/settings`, {
       method: "POST",
@@ -46,7 +48,7 @@ export function CustomPrompt({ prompt }: { prompt: string }) {
       <Toaster />
       <div className="flex items-center space-x-2">
         <Switch id="custom-prompt" onClick={handleSwitch} checked={checked} />
-        <Label htmlFor="custom-api-key">Custom Prompt</Label>
+        <Label htmlFor="custom-api-key">{t('custom_prompt')}</Label>
       </div>
       {checked && (
         <>
@@ -56,9 +58,7 @@ export function CustomPrompt({ prompt }: { prompt: string }) {
               setPromptValue(e.target.value);
             }}
           />
-          <Button onClick={handleSubmit} className="w-1/3">
-            Save
-          </Button>
+          <Button onClick={handleSubmit} className="w-1/3">{t('save')}</Button>
         </>
       )}
     </>

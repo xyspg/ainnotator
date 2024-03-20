@@ -13,10 +13,12 @@ import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import {Input} from "@/app/components/ui/input";
 import {QueryOrder} from "@/app/(main)/[locale]/(account)/orders/orders-client";
+import {getTranslations} from "next-intl/server";
 
 export default async function Page() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
+  const t = await getTranslations('Settings.Orders')
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -31,9 +33,9 @@ export default async function Page() {
     return (
       <>
         <div className="p-4 md:p-32 flex flex-col gap-4">
-          You have no orders.
+          {t('empty')}
           <Button color="primary">
-            <Link href="/pricing">I Will Have Order!</Link>
+            <Link href="/pricing">{t('makeorder')}</Link>
           </Button>
         </div>
       </>
@@ -45,9 +47,9 @@ export default async function Page() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Created At</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Amount</TableHead>
+              <TableHead>{t('created_at')}</TableHead>
+              <TableHead>{t('category')}</TableHead>
+              <TableHead>{t('amount')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
