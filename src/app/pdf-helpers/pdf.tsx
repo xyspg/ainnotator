@@ -90,7 +90,7 @@ export const PDF = ({
   }, [highlights]);
 
   if (error) {
-    toast.error(JSON.parse(error.message).message)
+    toast.error(error.message)
   }
 
   /**
